@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+	<LinearLayout
+		android:orientation="vertical"
+		android:background="#055505"
+		android:layout_margin="5dp"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		
+		<!-- DCモータスピードラベル -->
+		<TextView
+			android:text="Servo Motor's Rotation Degree"
+			android:textSize="16sp"
+			android:layout_gravity="center_vertical"
+			android:layout_marginRight="5dp"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+				
+		<!-- くるくるスライダー -->
+		<com.nakaikensuke.tools.DialSlider
+			android:id="@+id/servo_slider"
+			android:clickable="true"
+			android:background="#055505"
+			android:layout_gravity="center_horizontal"
+			android:layout_width="250dp"
+			android:layout_height="250dp" />
+			
+	</LinearLayout>
+	
+	<!-- DCモータ制御情報 -->
+	<LinearLayout
+		android:orientation="vertical"
+		android:background="#055555"
+		android:layout_margin="5dp"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+		
+		<RadioGroup
+			android:id="@+id/dc_motor_dirs"
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+			
+			<RadioButton
+				android:id="@+id/dc_motor_front"
+				android:text="Front"
+				android:textSize="16sp"
+				android:checked="true"
+				android:layout_gravity="center_vertical"
+				android:layout_weight="1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+				
+			<RadioButton
+				android:id="@+id/dc_motor_back"
+				android:text="Back"
+				android:textSize="16sp"
+				android:layout_gravity="center_vertical"
+				android:layout_weight="1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+				
+		</RadioGroup>
+		
+		<!-- DCモータスピード情報 -->
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_margin="5dp"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			
+			<!-- DCモータスピードラベル -->
+			<TextView
+				android:text="DC Motor's Speed"
+				android:textSize="16sp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginRight="5dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+				
+			<!-- DCモータスピードインジケータ -->
+			<SeekBar android:id="@+id/dc_motor_progress"
+				android:progress="0"
+				android:max="100"
+				android:layout_weight="1"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content" />
+				
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>
