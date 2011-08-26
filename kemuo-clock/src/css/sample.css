@@ -1,0 +1,9 @@
+p.very_important {
+	font-size: large;
+	color: red;
+}
+
+p.little_important {
+	font-size: medium;
+	color: green;
+}
