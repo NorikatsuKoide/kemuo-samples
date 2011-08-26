@@ -4,6 +4,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import datetime
 import models
 import logging
+import os
 
 class MainPage(webapp.RequestHandler):
 	def get(self):
@@ -34,16 +35,20 @@ class MainPage(webapp.RequestHandler):
 		<html>
 			<head>
 				<title>The Time Is...</title>
-				<link rel="stylesheet" href="/css/sample.css" type="text/css" />
+				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
 			</head>
 			<body>
-			<img src="/images/sample.png" />
+			<img src="/images/%s/sample.png" />
 			%s
 				<p class="very_important">The time is: %s</p>
 			%s
 			</body>
 		</html>
-		''' % (navbar, str(time), tz_form))
+		''' % (os.environ['CURRENT_VERSION_ID'],
+				os.environ['CURRENT_VERSION_ID'],
+				navbar,
+				str(time),
+				tz_form))
 
 application = webapp.WSGIApplication([('/', MainPage)], debug = True)
 

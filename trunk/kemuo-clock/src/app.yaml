@@ -3,10 +3,14 @@ version: 1
 runtime: python
 api_version: 1
 handlers:
-- url: /images
-  static_dir: images
-- url: /css
-  static_dir: css
+- url: /images/.*/(.*)
+  static_files: images/\1
+  expiration: "90d"
+  upload: images/.*
+- url: /css/.*/(.*)
+  static_files: css/\1
+  upload: css/.*
+  expiration: "90d"
 - url: /prefs
   script: prefs.py
   login: required
