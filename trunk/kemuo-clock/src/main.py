@@ -17,7 +17,7 @@ class MainPage(webapp.RequestHandler):
 			tz_form = ''
 		else:
 			userprefs = models.get_userprefs()
-			navbar = ('<p class="little_important>Welcome! %s! You can <a href="%s">sign out</a>.</p>') % (user.email(), users.create_logout_url(self.request.path))
+			navbar = ('<p class="little_important">Welcome! %s! You can <a href="%s">sign out</a>.</p>') % (user.email(), users.create_logout_url(self.request.path))
 			tz_form = '''
 				<form action="/prefs" method="post">
 					<lable for="tz_offset">
