@@ -1,3 +1,5 @@
+#! -*- coding: utf-8 -*-
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -8,8 +10,6 @@ import os
 
 class MainPage(webapp.RequestHandler):
 	def get(self):
-		logging.debug('Host: %s' % self.request.headers['Host']);
-		
 		time = datetime.datetime.now()
 		user = users.get_current_user()
 
@@ -52,7 +52,12 @@ class MainPage(webapp.RequestHandler):
 
 application = webapp.WSGIApplication([('/', MainPage)], debug = True)
 
+# アプリケーションがキャッシュされるかチェック
+logging.info('This message is in global area.')
+
 def main():
+	# 毎回呼ばれるかチェック
+	logging.info('This message is in main function.')
 	run_wsgi_app(application)
 
 if __name__ == '__main__':
