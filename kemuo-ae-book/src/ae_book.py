@@ -18,19 +18,54 @@ class MainPage(webapp.RequestHandler):
 
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		body = ''
 		self.response.out.write('''
 		<html>
 			<head>
-				<title>The Time Is...</title>
+				<title>The page for datastore</title>
 				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
 			</head>
 			<body>
+			<p class="very_important">Hello, App Engine!</p>
 			<img src="/images/%s/sample.png" />
-			%s
+			<hr>
+			<table>
+			<tr>
+				<td><a href="/create">Create</td>
+			</tr>
+			<tr>
+				<td><a href="/update">Update</td>
+			</tr>
+			<tr>
+				<td><a href="/read">Read</td>
+			</tr>
+			<tr>
+				<td><a href="/delete">Delete</td>
+			</tr>
+			</table>
+			</body>
+		</html>
+		''' % (os.environ['CURRENT_VERSION_ID'],
+				os.environ['CURRENT_VERSION_ID']))
+
+class CreatePage(webapp.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		self.response.out.write('''
+		<html>
+			<head>
+				<title>The page for Creating</title>
+				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
+			</head>
+			<body>
+			<p class="very_important">Creation</p>
+			<img src="/images/%s/sample.png" />
 			<hr>
 			<form action="/register" method="post">
 				<table>
+				<tr>
+					<td class="label">key:</td>
+					<td><input type="text" name="key"></td>
+				</tr>
 				<tr>
 					<td class="label">title:</td>
 					<td><input type="text" name="title"></td>
@@ -53,17 +88,44 @@ class MainPage(webapp.RequestHandler):
 			</body>
 		</html>
 		''' % (os.environ['CURRENT_VERSION_ID'],
-				os.environ['CURRENT_VERSION_ID'],
-				body))
+				os.environ['CURRENT_VERSION_ID']))
+
+class ReadPage(webapp.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		self.response.out.write('''
+		<html>
+			<head>
+				<title>The page for Creating</title>
+				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
+			</head>
+			<body>
+				<p class="very_important">Read</p>
+				<img src="/images/%s/sample.png" />
+				<hr>
+				Under construction...
+			</body>
+		</html>
+		''' % (os.environ['CURRENT_VERSION_ID'],
+				os.environ['CURRENT_VERSION_ID']))
+	
+	def post(self):
+		pass
 
 class Register(webapp.RequestHandler):
 	def post(self):
 		
 		# まずはPOSTのBodyを全て取り出す
+		key					= self.request.get('key')
 		title				= self.request.get('title')
 		author				= self.request.get('author')
 		copyright_year	= self.request.get('copyright_year')
 		author_birthdate	= self.request.get('author_birthdate')
+		
+		# キーはないと話にならないので最初にチェック
+		if not self.validateInput(key):
+			self.redirect('/')
+			return
 		
 		# 全部未入力の場合は何もしないでトップページにリダイレクト
 		if not (self.validateInput(title) or self.validateInput(author) or self.validateInput(copyright_year) or self.validateInput(author_birthdate)):
@@ -83,6 +145,7 @@ class Register(webapp.RequestHandler):
 		
 		# POSTされた情報をエンティティのプロパティに設定する
 		entity = Book(
+					key_name			= key,
 					title				= title,
 					author				= author,
 					copyright_year	= year,
@@ -99,7 +162,10 @@ class Register(webapp.RequestHandler):
 		return input != None and input != ''
 
 application = webapp.WSGIApplication(
-									[('/', MainPage), ('/register', Register)],
+									[('/', MainPage),
+									 ('/create', CreatePage),
+									 ('/read', ReadPage),
+									 ('/register', Register)],
 									debug=True)
 def main():
 	run_wsgi_app(application)
