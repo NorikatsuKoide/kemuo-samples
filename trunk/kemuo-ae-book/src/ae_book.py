@@ -57,7 +57,7 @@ class CreatePage(webapp.RequestHandler):
 				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
 			</head>
 			<body>
-			<p class="very_important">Creation</p>
+			<p class="very_important">エンティティを作成します</p>
 			<img src="/images/%s/sample.png" />
 			<hr>
 			<form action="/register" method="post">
@@ -83,8 +83,10 @@ class CreatePage(webapp.RequestHandler):
 					<td><input type="date" name="author_birthdate"></td>
 				</tr>
 				</table>
-				<input type="submit" value="OK">
+				<input type="submit" value="登録">
 			</form>
+			<hr>
+			<a href="/">戻る</a>
 			</body>
 		</html>
 		''' % (os.environ['CURRENT_VERSION_ID'],
@@ -94,23 +96,83 @@ class ReadPage(webapp.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
 		self.response.out.write('''
-		<html>
+		<!doctype html>
+		<html lang="en">
 			<head>
-				<title>The page for Creating</title>
+				<meta charset=utf-8>
+				<title>The page for Reading</title>
 				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
 			</head>
 			<body>
-				<p class="very_important">Read</p>
+				<p class="very_important">キー名からエンティティを検索します</p>
 				<img src="/images/%s/sample.png" />
 				<hr>
-				Under construction...
+				<form action="/read" method="post">
+					<p class="little_important">キー名: </p>
+					<input type="text" name="key_name">
+					<input type="submit" value="検索">
+				</form>
+				<hr>
+				<a href="/">戻る</a>
 			</body>
 		</html>
 		''' % (os.environ['CURRENT_VERSION_ID'],
 				os.environ['CURRENT_VERSION_ID']))
 	
 	def post(self):
-		pass
+		key_name = self.request.get('key_name')
+		key = db.Key.from_path('Book', key_name)
+		entity = Book.get(key)
+		self.response.headers['Content-Type'] = 'text/html'
+		body = ''
+		if entity == None:
+			body = '該当するエンティティがありません'
+		else:
+			body = '''
+			<table>
+				<tr>
+					<td class="little_important">title:</td>
+					<td>%s</td>
+				</tr>
+				<tr>
+					<td class="little_important">author:</td>
+					<td>%s</td>
+				</tr>
+				<tr>
+					<td class="little_important">copyright_year:</td>
+					<td>%s</td>
+				<tr>
+					<td class="little_important">author_birthdate:</td>
+					<td>%s</td>
+				</tr>
+				</table>
+			''' % (
+				entity.title,
+				entity.author,
+				entity.copyright_year,
+				entity.author_birthdate)
+			
+		self.response.out.write('''
+		<!doctype html>
+		<html lang="en">
+			<head>
+				<meta charset=utf-8>
+				<title>The page for Reading</title>
+				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
+			</head>
+			<body>
+				<p class="very_important">キー名で検索した結果: %s</p>
+				<img src="/images/%s/sample.png" />
+				<hr>
+				%s
+				<hr>
+				<a href="/read">戻る</a>
+			</body>
+		</html>
+		''' % (os.environ['CURRENT_VERSION_ID'],
+				key_name,
+				os.environ['CURRENT_VERSION_ID'],
+				body))
 
 class Register(webapp.RequestHandler):
 	def post(self):
