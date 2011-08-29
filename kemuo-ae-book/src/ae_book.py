@@ -51,8 +51,10 @@ class CreatePage(webapp.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
 		self.response.out.write('''
-		<html>
+		<!doctype html>
+		<html lang="en">
 			<head>
+				<meta charset=utf-8>
 				<title>The page for Creating</title>
 				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
 			</head>
