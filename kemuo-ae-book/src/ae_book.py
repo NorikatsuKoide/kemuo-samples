@@ -33,10 +33,10 @@ class MainPage(webapp.RequestHandler):
 				<td><a href="/create">Create</td>
 			</tr>
 			<tr>
-				<td><a href="/update">Update</td>
+				<td><a href="/read">Read</td>
 			</tr>
 			<tr>
-				<td><a href="/read">Read</td>
+				<td><a href="/update">Update</td>
 			</tr>
 			<tr>
 				<td><a href="/delete">Delete</td>
@@ -59,7 +59,7 @@ class CreatePage(webapp.RequestHandler):
 				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
 			</head>
 			<body>
-			<p class="very_important">エンティティを作成します</p>
+			<p class="very_important">エンティティを作成・更新します</p>
 			<img src="/images/%s/sample.png" />
 			<hr>
 			<form action="/register" method="post">
@@ -149,8 +149,10 @@ class ReadPage(webapp.RequestHandler):
 				</table>
 			''' % (
 				entity.title,
+				# entity.getProperty('title'), // この指定はダメ
 				entity.author,
-				entity.copyright_year,
+				# entity.copyright_year,
+				getattr(entity, 'copyright_year'),
 				entity.author_birthdate)
 			
 		# %sでunicode型を受け取る時、受け取る側もunicode型にする必要あり？
@@ -225,11 +227,75 @@ class Register(webapp.RequestHandler):
 	def validateInput(self, input):
 		return input != None and input != ''
 
+class DeletePage(webapp.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		self.response.out.write('''
+		<!doctype html>
+		<html lang="en">
+			<head>
+				<meta charset=utf-8>
+				<title>The page for Deleting</title>
+				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
+			</head>
+			<body>
+				<p class="very_important">キー名からエンティティを削除します</p>
+				<img src="/images/%s/sample.png" />
+				<hr>
+				<form action="/delete" method="post">
+					<p class="little_important">キー名: </p>
+					<input type="text" name="key_name">
+					<input type="submit" value="削除">
+				</form>
+				<hr>
+				<a href="/">戻る</a>
+			</body>
+		</html>
+		''' % (os.environ['CURRENT_VERSION_ID'],
+				os.environ['CURRENT_VERSION_ID']))
+		
+	def post(self):
+		
+		# キー名から削除すべきエンティティを取り出す
+		key_name = self.request.get('key_name')
+		entity = Book.get_by_key_name(key_name)
+		
+		if entity != None:
+			# entity.delete()
+			# db.delete(entity)
+			key = db.Key.from_path('Book', key_name)
+			db.delete(key)
+			message = u'キー名: %s のエンティティを削除しました' % (key_name)
+		else:
+			message = u'キー名: %s に該当するエンティティはありませんでした' % (key_name)
+
+		self.response.headers['Content-Type'] = 'text/html'
+		self.response.out.write(u'''
+		<!doctype html>
+		<html lang="en">
+			<head>
+				<meta charset=utf-16>
+				<title>The page for Deleting</title>
+				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
+			</head>
+			<body>
+				<p class="very_important">%s</p>
+				<img src="/images/%s/sample.png" />
+				<hr>
+				<a href="/delete">戻る</a>
+			</body>
+		</html>
+		''' % (os.environ['CURRENT_VERSION_ID'],
+				message,
+				os.environ['CURRENT_VERSION_ID']))
+		
 application = webapp.WSGIApplication(
 									[('/', MainPage),
-									 ('/create', CreatePage),
-									 ('/read', ReadPage),
-									 ('/register', Register)],
+									 ('/create',		CreatePage),
+									 ('/update',		CreatePage),
+									 ('/read',			ReadPage),
+									 ('/register',	Register),
+									 ('/delete',		DeletePage)],
 									debug=True)
 def main():
 	run_wsgi_app(application)
