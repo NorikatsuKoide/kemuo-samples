@@ -123,14 +123,13 @@ class ReadPage(webapp.RequestHandler):
 	
 	def post(self):
 		key_name = self.request.get('key_name')
-		key = db.Key.from_path('Book', key_name)
-		entity = Book.get(key)
+		entity = Book.get_by_key_name(key_name)
 		self.response.headers['Content-Type'] = 'text/html'
 		body = ''
 		if entity == None:
-			body = '該当するエンティティがありません'
+			body = u'該当するエンティティがありません'
 		else:
-			body = '''
+			body = u'''
 			<table>
 				<tr>
 					<td class="little_important">title:</td>
@@ -154,11 +153,12 @@ class ReadPage(webapp.RequestHandler):
 				entity.copyright_year,
 				entity.author_birthdate)
 			
-		self.response.out.write('''
+		# %sでunicode型を受け取る時、受け取る側もunicode型にする必要あり？
+		self.response.out.write(u'''
 		<!doctype html>
 		<html lang="en">
 			<head>
-				<meta charset=utf-8>
+				<meta charset=utf-16>
 				<title>The page for Reading</title>
 				<link rel="stylesheet" href="/css/%s/sample.css" type="text/css" />
 			</head>
