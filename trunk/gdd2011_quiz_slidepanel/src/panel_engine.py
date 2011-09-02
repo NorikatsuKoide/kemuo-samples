@@ -17,6 +17,9 @@ class PanelEngine:
 	
 	def solve(self, limits):
 		
+		# 解けなかった問題はパスするので移動制限を復帰させる
+		back_limits = copy.deepcopy(limits)
+		
 		self.result = ''
 		prev_score  = -1
 		prev_dir    = -1
@@ -35,10 +38,12 @@ class PanelEngine:
 			score_info = self.__get_high_score(expected_scores)
 			if score_info[0] == -1:
 				# どの方向にもいけなくなった
+				limits = copy.deepcopy(back_limits)
 				return
 			
 			# これ以上得点を上げることが出来ないかチェックする
 			if prev_score != -1 and prev_score <= score_info[1]:
+				limits = copy.deepcopy(back_limits)
 				return
 			
 			# 実際に得点が一番よい方向に空白を移動する
@@ -48,6 +53,7 @@ class PanelEngine:
 			# 制限を使い果たしたかチェックする
 			consumed = self.__update_limits(score_info[0], limits)
 			if consumed == True:
+				limits = copy.deepcopy(back_limits)
 				return
 			
 			# 問題が解けたかチェックする
