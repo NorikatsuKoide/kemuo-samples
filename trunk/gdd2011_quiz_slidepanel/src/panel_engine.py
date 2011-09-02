@@ -20,6 +20,7 @@ class PanelEngine:
 		self.result = ''
 		prev_score  = -1
 		prev_dir    = -1
+		buf_result	= ''
 		
 		# ここで無限ループする
 		while True:
@@ -51,12 +52,15 @@ class PanelEngine:
 			
 			# 問題が解けたかチェックする
 			if score_info[1] == 0:
-				self.result = str(self.board)
+				self.result = buf_result
 				return
 			
 			# 次の移動で比較するために今回のスコアをとっておく
 			prev_dir   = score_info[0]
 			prev_score = score_info[1]
+			
+			# 移動方向列の文字列を更新する
+			buf_result += self.__get_result_str(score_info[0])
 	
 	# 空白を上下左右に動かした時の得点を集計する
 	def __get_expected_score(self, current_position, prev_dir):
@@ -105,6 +109,17 @@ class PanelEngine:
 			
 		return limits.up == 0 or limits.down == 0 or 	limits.left == 0 or limits.right == 0
 	
+	# 移動方向の文字を取得する
+	def __get_result_str(self, direction):
+		if direction == 0:
+			return 'U'
+		elif direction == 1:
+			return 'D'
+		elif direction == 2:
+			return 'L'
+		else:
+			return 'R'
+		
 class PanelBoard:
 	def __init__(self, board, width, height):
 		self.board = []
