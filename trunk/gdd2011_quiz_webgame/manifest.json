@@ -1,0 +1,19 @@
+{
+	"name":				"My GDD2011 Extenstion",
+	"version":			"1.0",
+	"description":		"My solution for GDD2011's quiz",
+	"browser_action":	{
+		"default_icon":	"icon.png"
+	},
+	"content_scripts":	[
+	{
+			"matches": [
+				"http://gdd-2011-quiz-japan.appspot.com/webgame/problem*"
+			],
+			"js": [
+				"solver.js"
+			]
+	}],
+	"permissions": [
+	]
+}
