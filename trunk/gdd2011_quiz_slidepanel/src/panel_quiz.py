@@ -93,11 +93,12 @@ def main():
 			else:
 				Logging.debug('Success!')
 				numSolved += 1
-				Logging.output(solve)
+
+			Logging.output(solve)
 
 			noProblem += 1
 		
-		Logging.debug('Solving ' + str(numBoard) + ' problems finished -- ' + numSolved)
+		Logging.debug('Solving ' + str(numBoard) + ' problems finished -- ' + str(numSolved))
 		
 	finally:
 		if file != None:
