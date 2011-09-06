@@ -6,7 +6,7 @@ Created on 2011/08/31
 '''
 import copy
 import math
-from logger import Logging
+# from logger import Logging
 import constants
 
 class PanelEngine:
