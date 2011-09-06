@@ -39,7 +39,7 @@ class PanelEngine:
 				# 進むべき方向がなくなったら一つ戻って再開
 				prevDir = self.history.backTrack(blankPos, self.board, limits)
 				if prevDir == -2:
-					Logging.debug('1.これ以上戻ることが出来ない！')
+					# Logging.debug('1.これ以上戻ることが出来ない！')
 					return
 				depth = self.history.getDepth()
 				if depth == 1:
@@ -53,7 +53,7 @@ class PanelEngine:
 				# 一つ戻って出直す
 				prevDir = self.history.backTrack(blankPos, self.board, limits)
 				if prevDir == -2:
-					Logging.debug('2.これ以上戻ることが出来ない！')
+					# Logging.debug('2.これ以上戻ることが出来ない！')
 					return
 				depth = self.history.getDepth()
 				if depth == 1:
@@ -69,14 +69,14 @@ class PanelEngine:
 			consumed = self.__updateLimits(scoreInfo[0], limits)
 			if consumed == True:
 				limits = copy.deepcopy(backLimits)
-				Logging.debug('移動量を使い果たしてしまった！')
+				# Logging.debug('移動量を使い果たしてしまった！')
 				return
 			
-			Logging.debug(
-					'階層: ' + str(self.history.getDepth()) + ' ' +
-					'得点: ' + str(scoreInfo[1]) + ' ' +
-					'方向: ' + str(scoreInfo[0]) + ' ' +
-					'制限: ' + str(limits.up) + ' ' + str(limits.down) + ' ' + str(limits.left) + ' ' + str(limits.right))
+			#Logging.debug(
+			#		'階層: ' + str(self.history.getDepth()) + ' ' +
+			#		'得点: ' + str(scoreInfo[1]) + ' ' +
+			#		'方向: ' + str(scoreInfo[0]) + ' ' +
+			#		'制限: ' + str(limits.up) + ' ' + str(limits.down) + ' ' + str(limits.left) + ' ' + str(limits.right))
 			
 			# 問題が解けたかチェックする
 			if scoreInfo[1] == 0:

@@ -80,6 +80,7 @@ def main():
 		
 		# 問題を解くループ
 		noProblem = 1
+		numSolved = 0
 		for row in file:
 			Logging.debug('Start solving No.%d problem' % noProblem)
 			solve = solve_exercises(row, limits)
@@ -87,10 +88,16 @@ def main():
 				break
 			
 			# 問題の回答を出力
-			Logging.output(solve)
+			if str(solve) == '':
+				Logging.debug('Failed!')
+			else:
+				Logging.debug('Success!')
+				numSolved += 1
+				Logging.output(solve)
+
 			noProblem += 1
 		
-		Logging.debug('Solving ' + str(numBoard) + ' problems finished')
+		Logging.debug('Solving ' + str(numBoard) + ' problems finished -- ' + numSolved)
 		
 	finally:
 		if file != None:
