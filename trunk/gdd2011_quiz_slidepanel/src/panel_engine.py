@@ -135,6 +135,79 @@ class PanelEngine:
 		limits.update(dir)
 		return limits.isOver()
 	
+# 履歴クラス
+class Board:
+	def __init__(self, width, height):
+		self.back = None
+		self.cost = 0
+		self.hashNext = None
+		
+		self.board = []
+		self.width	 = width
+		self.height = height
+		pass
+	
+# 探索キュー
+class SearchQueue:
+	def __init__(self):
+		self.list = []
+		
+	def enqueue(self, board):
+		self.list.append(board)
+		self.list.sort(cmp =
+					lambda item1, item2:
+						item1.cost - item2.cost)
+		
+	def dequeue(self):
+		if len(self.list):
+			return None
+		return self.list.pop(0)
+	
+	def empty(self):
+		return len(self.list) == 0
+	
+# ボードのハッシュテーブル
+class BoardHash:
+	def __init__(self):
+		self.table = {}
+		pass
+	
+	def __getHashValue(self, board):
+		return str(hash(board))
+	
+	def insert(self, board):
+		key = self.__getHashValue(board)
+		tmp = self.table.get(key)
+		if tmp == None:
+			self.table[key] = board
+			return
+		
+		while tmp.hashNext != None:
+			tmp = tmp.hashNext
+			
+		tmp.hashNext = board
+		
+	def isExist(self, board):
+		
+		key = self.__getHashValue(board)
+		tmp = self.table.get(key)
+		if tmp == None:
+			return False
+		
+		while tmp != None:
+			isSame = self.__checkSame(board, tmp)
+			if isSame:
+				return True
+		
+		return False
+	
+	def __checkSame(self, board1, board2):
+		for i in range(0, self.height):
+			for j in range(0, self.width):
+				if board1[i][j] != board2[i][j]:
+					return False
+		return True
+	
 # 履歴管理クラス
 class HistoryManager:
 	def __init__(self):
