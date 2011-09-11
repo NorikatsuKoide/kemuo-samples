@@ -28,6 +28,8 @@ public class SlidePazzle {
 		
 		while(true) {
 			
+			long msec = System.currentTimeMillis();
+			
 			System.err.println((numProblem + 1) + "問目計算中");
 			numProblem ++;
 			
@@ -73,12 +75,12 @@ public class SlidePazzle {
 				_hashs[1].put(fromLast);
 				
 				while(true) {
-					int result      = start(_queues[0], _hashs[0], _hashs[1], true);
+					int result      = start(_queues[0], _hashs[0], _hashs[1], true, msec);
 					boolean isBreak = doAfter(result, true, _limit);
 					if(isBreak)
 						break;
 					
-					result  = start(_queues[1], _hashs[1], _hashs[0], false);
+					result  = start(_queues[1], _hashs[1], _hashs[0], false, msec);
 					isBreak = doAfter(result, false, _limit);
 					if(isBreak)
 						break;
@@ -116,7 +118,11 @@ public class SlidePazzle {
 	private static final int CONTINUE = 2;
 	private static final int GIVE_UP  = -1;
 	
-	private int start(BoardQueue queue, BoardHash myHash, BoardHash otherHash, boolean fromStart) {
+	private int start(BoardQueue queue, BoardHash myHash, BoardHash otherHash, boolean fromStart, long baseTime) {
+		
+		long currentTime = System.currentTimeMillis();
+		if(currentTime - baseTime > 15L * 60L * 1000L)
+			return GIVE_UP;
 		
 		Board nowBoard = queue.dequeue();
 		if(nowBoard == null)
