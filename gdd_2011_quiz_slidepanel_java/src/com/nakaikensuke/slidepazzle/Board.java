@@ -298,7 +298,7 @@ public class Board implements Comparable<Board>{
 		case 'U': return 'D';
 		case 'D': return 'U';
 		case 'L': return 'R';
-		case 'R': return 'R';
+		case 'R': return 'L';
 		default:
 			return '0';
 		}
