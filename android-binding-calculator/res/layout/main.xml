@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:binding="http://www.gueei.com/android-binding/"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+	<!-- 計算結果 -->
+	<TextView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:textSize="45dp"
+		android:gravity="right|bottom"
+		binding:text="FormattedDisplay" />
+		
+	<!-- 電卓ボタン -->
+	<TableLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:stretchColumns="0,1,2,3" >
+		
+		<TableRow>
+			<Button android:text="/" binding:onClick="Divide" />
+			<Button android:text="X" binding:onClick="Multiply" />
+			<Button android:text="-" binding:onClick="Minus" />
+			<Button android:text="+" binding:onClick="Plus" />
+		</TableRow>
+		
+		<TableRow>
+			<Button android:text="7" binding:onClick="Number7" />
+			<Button android:text="8" binding:onClick="Number8" />
+			<Button android:text="9" binding:onClick="Number9" />
+			<Button android:text="&lt;" binding:onClick="Back" />
+		</TableRow>
+		
+		<TableRow>
+			<Button android:text="4" binding:onClick="Number4" />
+			<Button android:text="5" binding:onClick="Number5" />
+			<Button android:text="6" binding:onClick="Number6" />
+			<Button android:text="AC" binding:onClick="AllClear" />
+		</TableRow>
+		
+		<TableRow>
+			<Button android:text="1" binding:onClick="Number1" />
+			<Button android:text="2" binding:onClick="Number2" />
+			<Button android:text="3" binding:onClick="Number3" />
+		</TableRow>
+		
+		<TableRow>
+			<Button android:text="0" binding:onClick="Number0" android:layout_span="2" />
+			<Button android:text="." binding:onClick="Dot" />
+			<Button android:text="=" binding:onClick="Equal" />
+		</TableRow>
+
+	</TableLayout>
+	
+</LinearLayout>
