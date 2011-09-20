@@ -10,6 +10,7 @@ import android.view.View;
 
 public class CalculatorViewModel {
 	
+	// 計算結果表示用プロパティ
 	public final Observable<Double> Display = new Observable<Double>(Double.class, 0d);
 	public final DependentObservable<String> FormattedDisplay = new DependentObservable<String>(String.class, Display) {
 		@Override
@@ -37,6 +38,20 @@ public class CalculatorViewModel {
 	public NumberCommand Number1 = new NumberCommand(1);
 	public NumberCommand Number0 = new NumberCommand(0);
 	
+	// 数字ボタンアクションに対応するコマンドクラス
+	private class NumberCommand extends Command {		// CommandはInterfaceじゃない!
+		private int _number = 0;
+		
+		public NumberCommand(int number) {
+			_number = number;
+		}
+		
+		@Override
+		public void Invoke(View arg0, Object... arg1) {
+			addNumber(_number);
+		}
+	}
+	
 	// Backボタン用コマンド
 	public Command Back = new Command() {
 		@Override
@@ -61,19 +76,45 @@ public class CalculatorViewModel {
 		}
 	};
 	
-	// 数字ボタンアクションに対応するコマンドクラス
-	private class NumberCommand extends Command {		// CommandはInterfaceじゃない!
-		private int _number = 0;
-		
-		public NumberCommand(int number) {
-			_number = number;
-		}
-		
+	// ＋ボタン用コマンド
+	public OperatorCommand Plus = new OperatorCommand(new Operator(1, "+", false) {
 		@Override
-		public void Invoke(View arg0, Object... arg1) {
-			addNumber(_number);
+		public double calculate(double operandA, double operandB) {
+			return operandA + operandB;
 		}
-	}
+	});
+	
+	// ーボタン用コマンド
+	public OperatorCommand Minus = new OperatorCommand(new Operator(1, "-", false) {
+		@Override
+		public double calculate(double operandA, double operandB) {
+			return operandA - operandB;
+		}
+	});
+	
+	// ×ボタン用コマンド
+	public OperatorCommand Multiply = new OperatorCommand(new Operator(2, "x", false) {
+		@Override
+		public double calculate(double operandA, double operandB) {
+			return operandA * operandB;
+		}
+	});
+	
+	// ÷ボタン用コマンド
+	public OperatorCommand Divide = new OperatorCommand(new Operator(2, "/", false) {
+		@Override
+		public double calculate(double operandA, double operandB) {
+			return operandA / operandB;
+		}
+	});
+	
+	// ＝ボタン用コマンド
+	public OperatorCommand Equal = new OperatorCommand(new Operator(0, "=", true) {
+		@Override
+		public double calculate(double operandA, double operandB) {
+			return operandA;
+		}
+	});
 	
 	// 演算を表すクラス
 	private abstract static class Operator {
@@ -89,6 +130,7 @@ public class CalculatorViewModel {
 		
 		// 各種フィールドアクセスメソッド
 		public int		 getLevel()  {return _level;}
+		@SuppressWarnings("unused")
 		public String  getSymbol() {return _symbol;}
 		public boolean isUnary()   {return _unaray;}
 		
@@ -109,7 +151,7 @@ public class CalculatorViewModel {
 		}
 	}
 	
-	// 現在計算結果として表示している文字列
+	// 現在有効なオペランドの文字列
 	private String _current = "0";
 	
 	// 計算可能な最大桁数
@@ -162,6 +204,8 @@ public class CalculatorViewModel {
 	// 数字を追加します
 	private void addNumber(int number) {
 		
+		_lastCommandIsOperator = false;
+		
 		String temp = _current;
 		if(temp.length() >= MAXLENGTH)
 			return;
@@ -177,6 +221,59 @@ public class CalculatorViewModel {
 	
 	// 演算を実行します
 	private void operate(Operator operator) {
-		// TODO:
+		
+		if(!_lastCommandIsOperator) {
+			
+			// 直前の入力が演算でない場合は、直前の入力 (左辺) をスタックに積む
+			_operands.push(Double.parseDouble(_current));
+			_lastCommandIsOperator = true;
+			
+		} else {
+			
+			// 直前の入力が演算の場合は、直前の入力 (演算) をキャンセルする
+			if(!_operators.isEmpty()) {
+				_operators.pop();
+			}
+		}
+		
+		if(operator.isUnary() && operator.getLevel() > 0) {
+
+			// ＝以外の単項演算子の場合 (現時点では存在しない)
+			// 直前のオペランドに対して演算を適用する
+			// TODO: オペランドがない場合はど〜なる？
+			double result = operator.calculate(_operands.pop(), 0d);
+			Display.set(result);
+			_current = String.valueOf(result);
+			
+		} else {
+			
+			// ＝かもしくは二項演算子の場合
+			// もちろん×や÷の方が＋やーよりも優先度が高い
+			// 次に演算する時に優先順位を判定するために優先順位が低い演算を残しておく。
+			//
+			// 1 + 2 - 3 × 4 ＝
+			// でトレースすると分かりやすい。
+			
+			Operator lastOperator = null;
+			while(!_operators.empty()) {
+				lastOperator = _operators.peek();
+				if(lastOperator.getLevel() >= operator.getLevel()) {
+					double operandB = _operands.pop();
+					double operandA = _operands.pop();
+					double result = lastOperator.calculate(operandA, operandB);
+					Display.set(result);
+					_operands.push(result);
+					_operators.pop();
+				} else {
+					break;
+				}
+			}
+			
+			if(operator.getLevel() > 0) {
+				_operators.push(operator);
+			}
+			
+			_current = "0";
+		}
 	}
 }
