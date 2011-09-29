@@ -105,7 +105,7 @@ class RegisterPage(webapp.RequestHandler):
 		else:
 			body += u'ありません。'
 			
-		body += '''
+		body += u'''
 			<hr>
 			<a href="/">戻る</a>
 			</body>
