@@ -6,7 +6,44 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent" >
 	
+	<LinearLayout
+		android:background="@color/titleBackground"
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		
+		<Button
+			android:background="@drawable/home_button"
+			android:gravity="left"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			binding:onClick="OnGoToHome" />
+		
+		<TextView
+			android:textSize="20sp"
+			android:textColor="@color/titleBarTitle"
+			android:singleLine="true"
+			android:ellipsize="marquee"
+			android:paddingLeft="10dp"
+			android:layout_weight="1"
+			android:layout_gravity="center_vertical"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			binding:text="CurrentPath" />
+			
+		<Button
+			android:background="@drawable/close_button"
+			android:gravity="right"
+			android:layout_gravity="center_vertical"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			binding:onClick="OnFinish" />
+		
+	</LinearLayout>
+	
 	<ListView
+		android:divider="@color/listDivider"
+		android:layout_weight="1"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		binding:itemSource="DirectoryEntryList"
