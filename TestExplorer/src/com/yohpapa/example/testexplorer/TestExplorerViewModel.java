@@ -7,9 +7,18 @@ import gueei.binding.observables.BooleanObservable;
 import gueei.binding.observables.StringObservable;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.view.View;
+import android.widget.Toast;
+
+import com.yohpapa.example.tools.MimeUtils;
 
 /**
  * SDカードエクスプローラ用ViewModel
@@ -18,15 +27,15 @@ import android.view.View;
  */
 public class TestExplorerViewModel {
 	
-	public ArrayListObservable<DirectoryEntry> DirectoryEntryList =
-					new ArrayListObservable<DirectoryEntry>(DirectoryEntry.class);
+	private Activity _hostActivity = null;
 	
-	public class DirectoryEntry {
-		public StringObservable Name = new StringObservable();
-		public BooleanObservable IsFile = new BooleanObservable();
+	/**
+	 * コンストラクタ
+	 * @param context
+	 */
+	public TestExplorerViewModel(Activity activity) {
+		_hostActivity = activity;
 	}
-
-	private String _currentPath = null;
 	
 	/**
 	 * ディレクトリエントリを設定する
@@ -34,17 +43,21 @@ public class TestExplorerViewModel {
 	 */
 	public void setPath(String path) {
 
+		// ファイルの場合は移動出来ないので何もしない
 		File file = new File(path);
 		if(file.isFile()) {
 			return;
 		}
 
+		// ファイル／ディレクトリが存在しない場合も何もしない
 		File[] files = file.listFiles();
-		if(files.length <= 0)
+		if(files == null || files.length <= 0)
 			return;
 		
-		_currentPath = path;
+		// 現在の表示ディレクトリのパスを更新する
+		CurrentPath.set(path);
 		
+		// ディレクトリエントリリストを初期化する
 		DirectoryEntry[] entries = new DirectoryEntry[files.length];
 		for(int i = 0; i < files.length; i ++) {
 			DirectoryEntry entry = new DirectoryEntry();
@@ -57,8 +70,30 @@ public class TestExplorerViewModel {
 			entries[i] = entry;
 		}
 		
+		// エントリ列を昇順にソートする
+		Arrays.sort(entries, _entryComparator);
+		
+		// リスト表示を更新する
 		DirectoryEntryList.setArray(entries);
 	}
+	
+	// ディレクトリエントリ列ソート用比較オブジェクト
+	private final Comparator<DirectoryEntry> _entryComparator = new Comparator<TestExplorerViewModel.DirectoryEntry>() {
+		@Override
+		public int compare(DirectoryEntry entry1, DirectoryEntry entry2) {
+			
+			// まずはディレクトリを優先する
+			boolean isFile1 = entry1.IsFile.get();
+			boolean isFile2 = entry2.IsFile.get();
+			if(!isFile1 && isFile2)
+				return -1;
+			if(isFile1 && !isFile2)
+				return 1;
+			
+			// それでも決着が付かない場合は名前順とする
+			return entry1.Name.get().compareTo(entry2.Name.get());
+		}
+	};
 	
 	/**
 	 * 1階層戻る
@@ -66,11 +101,12 @@ public class TestExplorerViewModel {
 	public boolean backPath() {
 		
 		// SDカードのTOP階層から上にはイケないことにする
-		if(_currentPath.equals(Environment.getExternalStorageDirectory().getPath()))
+		String path = CurrentPath.get();
+		if(path.equals(Environment.getExternalStorageDirectory().getPath()))
 			return false;
 		
 		// あり得ないはずだが、パスが「/」の場合は、上にはイケないことにする
-		String[] tmp = _currentPath.split("\\/");
+		String[] tmp = path.split("\\/");
 		if(tmp.length <= 1)
 			return false;
 		
@@ -85,27 +121,91 @@ public class TestExplorerViewModel {
 		return true;
 	}
 	
-	// リストクリックイベントハンドラオブジェクト
+	// リストプロパティ
+	public ArrayListObservable<DirectoryEntry> DirectoryEntryList =
+			new ArrayListObservable<DirectoryEntry>(DirectoryEntry.class);
+
+	// リスト項目プロパティクラス
+	public class DirectoryEntry {
+		public StringObservable Name = new StringObservable();
+		public BooleanObservable IsFile = new BooleanObservable();
+	}
+	
+	// リストクリックプロパティ
+	// REMARK!
+	// このオブジェクトにクリックされたリストに対応するオブジェクトが設定される
+	public Observable<Object> ClickedItem = new Observable<Object>(Object.class);
+	
+	// 現在パスプロパティ
+	public StringObservable CurrentPath = new StringObservable("");
+
+	// リストクリックコマンド
 	public Command OnItemClicked = new Command() {
 		@Override
 		public void Invoke(View view, Object... args) {
-			if(_currentPath == null)
+			String path = CurrentPath.get();
+			if(path == null)
 				return;
 			
 			DirectoryEntry clicked = (DirectoryEntry)ClickedItem.get();
 			if(clicked == null)
 				return;
 			
-			if(clicked.IsFile.get() == true)
+			// ファイルをタップしたらIntent起動する
+			if(clicked.IsFile.get() == true) {
+				sendIntent(path + "/" + clicked.Name.get());
 				return;
+			}
 			
-			String path = _currentPath + "/" + clicked.Name.get();
+			path += "/" + clicked.Name.get();
 			setPath(path);
 		}
 	};
 	
-	// リストクリックオブジェクト
-	// REMARK!
-	// このオブジェクトにクリックされたリストに対応するオブジェクトが設定される
-	public Observable<Object> ClickedItem = new Observable<Object>(Object.class);
+	/**
+	 * 指定されたパスのファイルに対する暗黙的Intentを発行する
+	 * @param path
+	 */
+	private void sendIntent(String path) {
+		
+		// 暗黙Intentのためのパラメータを準備する
+		File	file = new File(path);
+		Uri		uri  = Uri.fromFile(file);
+		String	mime = MimeUtils.getMimeType(file.getName());
+		
+		// Intentオブジェクトを初期化する
+		Intent	intent = new Intent();
+		intent.setAction(Intent.ACTION_VIEW);
+		intent.setDataAndType(uri, mime);
+		
+		// 暗黙Intentを発行する
+		try {
+			_hostActivity.startActivity(intent);
+		} catch(ActivityNotFoundException e) {
+			Toast.makeText(
+					_hostActivity,
+					_hostActivity.getText(R.string.application_not_found),
+					Toast.LENGTH_LONG).show();
+		}
+	}
+	
+	// HOMEボタンクリックコマンド
+	public Command OnGoToHome = new Command() {
+		@Override
+		public void Invoke(View view, Object... args) {
+			
+			// 現在パスをSDカードルートに戻す
+			setPath(Environment.getExternalStorageDirectory().getPath());
+		}
+	};
+	
+	// ×ボタンクリックコマンド
+	public Command OnFinish = new Command() {
+		@Override
+		public void Invoke(View view, Object... args) {
+			
+			// Activityを終了する
+			_hostActivity.finish();
+		}
+	};
 }

@@ -8,6 +8,7 @@
 		android:icon="@drawable/icon"
 		android:label="@string/app_name"
 		android:name="TestExplorerApplication"
+		android:theme="@android:style/Theme.NoTitleBar"
 		android:enabled="true" android:debuggable="false">
  
  		<activity

@@ -8,7 +8,7 @@
 
 	<TextView
 		android:textSize="20sp"
-		android:textColor="#FEFEFE"
+		android:textColor="@color/windowForeground"
 		android:singleLine="true"
 		android:ellipsize="marquee"
 		binding:text="Name"

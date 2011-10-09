@@ -26,7 +26,7 @@ public class TestExplorer extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		// ViewとView Modelをバインド
-		_model = new TestExplorerViewModel();
+		_model = new TestExplorerViewModel(this);
 		Binder.setAndBindContentView(this, R.layout.main, _model);
 	}
 
