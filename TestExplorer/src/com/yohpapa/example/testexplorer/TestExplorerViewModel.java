@@ -25,13 +25,16 @@ import com.yohpapa.example.tools.MimeUtils;
  * @author yohpapa
  *
  */
-public class TestExplorerViewModel {
+public class TestExplorerViewModel extends java.util.Observable {
+	
+	public static final int CHANGE_DIRECTORY = 0;
+	public static final int ADJUST_POSITION  = 1;
 	
 	private Activity _hostActivity = null;
 	
 	/**
 	 * コンストラクタ
-	 * @param context
+	 * @param activity
 	 */
 	public TestExplorerViewModel(Activity activity) {
 		_hostActivity = activity;
@@ -75,6 +78,10 @@ public class TestExplorerViewModel {
 		
 		// リスト表示を更新する
 		DirectoryEntryList.setArray(entries);
+		
+		// ラスト表示位置に合わせる
+		setChanged();
+		notifyObservers(ADJUST_POSITION);
 	}
 	
 	// ディレクトリエントリ列ソート用比較オブジェクト
@@ -118,7 +125,20 @@ public class TestExplorerViewModel {
 		
 		// 一つ上の階層に移動する
 		setPath(dest);
+		
+		// 表示階層変更を通知する
+		setChanged();
+		notifyObservers(CHANGE_DIRECTORY);
+
 		return true;
+	}
+	
+	/**
+	 * 現在表示中の階層のパスを取得する
+	 * @return
+	 */
+	public String getCurrentPath() {
+		return CurrentPath.get();
 	}
 	
 	// リストプロパティ
@@ -138,7 +158,7 @@ public class TestExplorerViewModel {
 	
 	// 現在パスプロパティ
 	public StringObservable CurrentPath = new StringObservable("");
-
+	
 	// リストクリックコマンド
 	public Command OnItemClicked = new Command() {
 		@Override
@@ -157,6 +177,11 @@ public class TestExplorerViewModel {
 				return;
 			}
 			
+			// 移動する前に表示階層変更を通知する
+			TestExplorerViewModel.this.setChanged();
+			TestExplorerViewModel.this.notifyObservers(CHANGE_DIRECTORY);
+			
+			// ディレクトリをタップしたら次の階層に移動する
 			path += "/" + clicked.Name.get();
 			setPath(path);
 		}
