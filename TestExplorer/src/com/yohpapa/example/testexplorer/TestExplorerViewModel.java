@@ -27,17 +27,19 @@ import com.yohpapa.example.tools.MimeUtils;
  */
 public class TestExplorerViewModel extends java.util.Observable {
 	
-	public static final int CHANGE_DIRECTORY = 0;
-	public static final int ADJUST_POSITION  = 1;
-	
 	private Activity _hostActivity = null;
-	
+	private IListPosition _positioner = null;
+	private PositionManager _posManager = null;
+
 	/**
 	 * コンストラクタ
 	 * @param activity
+	 * @param positioner
 	 */
-	public TestExplorerViewModel(Activity activity) {
+	public TestExplorerViewModel(Activity activity, IListPosition positioner) {
 		_hostActivity = activity;
+		_positioner = positioner;
+		_posManager = new PositionManager();
 	}
 	
 	/**
@@ -78,10 +80,6 @@ public class TestExplorerViewModel extends java.util.Observable {
 		
 		// リスト表示を更新する
 		DirectoryEntryList.setArray(entries);
-		
-		// ラスト表示位置に合わせる
-		setChanged();
-		notifyObservers(ADJUST_POSITION);
 	}
 	
 	// ディレクトリエントリ列ソート用比較オブジェクト
@@ -123,12 +121,16 @@ public class TestExplorerViewModel extends java.util.Observable {
 			dest += "/" + tmp[i];
 		}
 		
+		// 現在の表示位置をクリアする (不要なため)
+		_posManager.remove(path);
+
 		// 一つ上の階層に移動する
 		setPath(dest);
 		
-		// 表示階層変更を通知する
+		// 表示位置を通知する
+		int position = _posManager.getPosition(dest);
 		setChanged();
-		notifyObservers(CHANGE_DIRECTORY);
+		notifyObservers(position);
 
 		return true;
 	}
@@ -163,27 +165,32 @@ public class TestExplorerViewModel extends java.util.Observable {
 	public Command OnItemClicked = new Command() {
 		@Override
 		public void Invoke(View view, Object... args) {
-			String path = CurrentPath.get();
-			if(path == null)
+			String org = CurrentPath.get();
+			if(org == null)
 				return;
 			
 			DirectoryEntry clicked = (DirectoryEntry)ClickedItem.get();
 			if(clicked == null)
 				return;
 			
+			String dest = org + "/" + clicked.Name.get();
+
 			// ファイルをタップしたらIntent起動する
 			if(clicked.IsFile.get() == true) {
-				sendIntent(path + "/" + clicked.Name.get());
+				sendIntent(dest);
 				return;
 			}
 			
-			// 移動する前に表示階層変更を通知する
-			TestExplorerViewModel.this.setChanged();
-			TestExplorerViewModel.this.notifyObservers(CHANGE_DIRECTORY);
+			// 移動する前に現在の位置を保存しておく
+			int position = _positioner.getListPosition();
+			_posManager.append(org, position);
 			
-			// ディレクトリをタップしたら次の階層に移動する
-			path += "/" + clicked.Name.get();
-			setPath(path);
+			// 次の階層に移動する
+			setPath(dest);
+			
+			// 新しい階層に移動したら先頭で表示する
+			TestExplorerViewModel.this.setChanged();
+			TestExplorerViewModel.this.notifyObservers(0);
 		}
 	};
 	
@@ -219,8 +226,15 @@ public class TestExplorerViewModel extends java.util.Observable {
 		@Override
 		public void Invoke(View view, Object... args) {
 			
+			// 全ての位置をクリアしておく
+			_posManager.removeAll();
+
 			// 現在パスをSDカードルートに戻す
 			setPath(Environment.getExternalStorageDirectory().getPath());
+			
+			// HOMEに移動したら先頭で表示する
+			TestExplorerViewModel.this.setChanged();
+			TestExplorerViewModel.this.notifyObservers(0);
 		}
 	};
 	

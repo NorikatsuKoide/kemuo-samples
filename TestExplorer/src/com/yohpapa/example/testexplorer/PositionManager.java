@@ -1,7 +1,6 @@
 package com.yohpapa.example.testexplorer;
 
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * 各表示階層のラスト表示位置を管理する
@@ -17,17 +16,6 @@ public class PositionManager {
 	 * @param position
 	 */
 	public void append(String path, int position) {
-		
-		// 保持する階層よりも下の階層は全てクリアする
-		Set<String> keys = _positions.keySet();
-		for(String key : keys) {
-			int index = key.indexOf(path);
-			if(index == 0) {
-				_positions.remove(key);
-			}
-		}
-		
-		// 表示階層と表示位置の対を登録する
 		_positions.put(path, position);
 	}
 	
@@ -39,6 +27,13 @@ public class PositionManager {
 		if(_positions.containsKey(path)) {
 			_positions.remove(path);
 		}
+	}
+	
+	/**
+	 * 全ての表示位置を削除する
+	 */
+	public void removeAll() {
+		_positions.clear();
 	}
 	
 	/**

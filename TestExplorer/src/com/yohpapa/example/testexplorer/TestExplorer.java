@@ -1,9 +1,10 @@
 package com.yohpapa.example.testexplorer;
 
+import gueei.binding.Binder;
+
 import java.util.Observable;
 import java.util.Observer;
 
-import gueei.binding.Binder;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,8 +25,6 @@ public class TestExplorer extends Activity {
 	
 	private ListView _listView = null;
 	
-	private PositionManager _posManager = null;
-	
 	/**
 	 * Activity生成イベントハンドラ
 	 */
@@ -34,14 +33,11 @@ public class TestExplorer extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		// ViewとView Modelをバインド
-		_model = new TestExplorerViewModel(this);
+		_model = new TestExplorerViewModel(this, _listPosition);
 		Binder.setAndBindContentView(this, R.layout.main, _model);
 		
 		// 表示位置を制御するため泣く泣く取得
 		_listView = (ListView)findViewById(R.id.list);
-		
-		// 表示位置管理用オブジェクト初期化
-		_posManager = new PositionManager();
 	}
 
 	/**
@@ -63,7 +59,6 @@ public class TestExplorer extends Activity {
 	 */
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		
 		// 表示階層変更監視解除
@@ -109,34 +104,25 @@ public class TestExplorer extends Activity {
 		@Override
 		public void update(Observable observable, Object param) {
 			
-			Integer option = (Integer)param;
-			if(option == null)
+			Integer position = (Integer)param;
+			if(position == null)
 				return;
 			
-			int position = 0;
+			if(_listView == null)
+				return;
 			
-			switch(option) {
-			case TestExplorerViewModel.CHANGE_DIRECTORY:
-				
-				// 現在のパスと表示開始位置を保存する
-				_currentPath = _model.getCurrentPath();
-				position = _listView.getFirstVisiblePosition();
-				_posManager.append(_currentPath, position);
-				
-				break;
-				
-			case TestExplorerViewModel.ADJUST_POSITION:
-				
-				// 現在表示パスのラスト位置をキャッシュから引き出して設定する
-				_currentPath = _model.getCurrentPath();
-				position = _posManager.getPosition(_currentPath);
-				_listView.setSelection(position);
-				
-				break;
-				
-			default:
-				break;
-			}
+			_listView.setSelection(position);
+		}
+	};
+	
+	// リスト位置取得インターフェイスオブジェクト
+	private final IListPosition _listPosition = new IListPosition() {
+		@Override
+		public int getListPosition() {
+			if(_listView == null)
+				return 0;
+			
+			return _listView.getFirstVisiblePosition();
 		}
 	};
 }
