@@ -23,12 +23,12 @@ class BugReportHandler(webapp.RequestHandler):
 		
 		# メール本文作成
 		content = u'''
-		dev: %s
-		mod: %s
-		sdk: %s
-		ver: %s
-		exc:
-		%s
+Build.DEVICE: %s
+Build.MODEL: %s
+Build.VERSION.SDK: %s
+PackageInfo.versionName: %s
+Exception stack trace:
+%s
 		''' % (device, model, sdk, version, exception)
 		
 		# ログメールを開発者に送信する
