@@ -20,6 +20,20 @@ class BugReportHandler(webapp.RequestHandler):
 		sdk			= self.request.get("sdk")
 		version	= self.request.get("ver")
 		exception	= self.request.get("exc")
+		address1	= self.request.get("adr1")
+		address2	= self.request.get("adr2")
+		address3	= self.request.get("adr3")
+		
+		if address1 == "":
+			self.response.out.write('Failed')
+			return
+		
+		address = [address1]
+		if address2 != "":
+			address.append(address2)
+			
+		if address3 != "":
+			address.append(address3)
 		
 		# メール本文作成
 		content = u'''
@@ -34,8 +48,8 @@ Exception stack trace:
 		# ログメールを開発者に送信する
 		mail.send_mail(
 				sender="hogehoge@gmail.com",
-				to="hogehoge@gmail.com",
-				subject="hogehoge",
+				to=address,
+				subject="Hogehoge Bug Report",
 				body=content)
 		
 		# 一応何かしらのレスポンスを返す
