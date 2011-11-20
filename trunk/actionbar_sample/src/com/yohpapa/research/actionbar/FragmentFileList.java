@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/*
 Copyright (c) 2011, KENSUKE NAKAI
 All rights reserved.
 
@@ -25,7 +24,60 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
--->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<LinearLayout style="@style/ActionBar" />
-</merge>
+*/
+package com.yohpapa.research.actionbar;
+
+import java.io.File;
+
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.support.v4.app.ListFragment;
+import android.widget.ArrayAdapter;
+
+public class FragmentFileList extends ListFragment {
+
+	private Thread _thread = null;
+	private Handler _handler = null;
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		
+		_handler = new Handler();
+		_thread = new Thread(
+						new FileListGenerator(
+							Environment.getExternalStorageDirectory().toString(),
+							_fileListCallback));
+		_thread.start();
+	}
+	
+	private final FileListGenerator.Callback _fileListCallback = new FileListGenerator.Callback() {
+		@Override
+		public void notifyFileList(final File[] files) {
+			if(files == null || files.length <= 0)
+				return;
+			
+			_handler.post(new Runnable() {
+				@Override
+				public void run() {
+					setListAdapter(
+							new ArrayAdapter<String>(
+									getActivity(),
+									android.R.layout.simple_list_item_1,
+									getFileNameList(files)));
+				}
+			});
+		}
+	};
+	
+	private String[] getFileNameList(File[] files) {
+		String[] nameList = new String[files.length];
+		
+		for(int i = 0; i < files.length; i ++) {
+			nameList[i] = files[i].getName();
+		}
+		
+		return nameList;
+	}
+}

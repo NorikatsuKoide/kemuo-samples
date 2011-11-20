@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/*
 Copyright (c) 2011, KENSUKE NAKAI
 All rights reserved.
 
@@ -25,7 +24,39 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
--->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<LinearLayout style="@style/ActionBar" />
-</merge>
+*/
+package com.yohpapa.research.actionbar;
+
+import java.io.File;
+
+public class FileListGenerator implements Runnable {
+	public interface Callback {
+		void notifyFileList(File[] files);
+	}
+	
+	private final String _path;
+	private final Callback _callback;
+	public FileListGenerator(String path, Callback callback) {
+		_path = path;
+		_callback = callback;
+	}
+	
+	@Override
+	public void run() {
+		File[] files = null;
+		try {
+			if(_path == null)
+				return;
+			
+			File file = new File(_path);
+			if(file.isFile())
+				return;
+			
+			files = file.listFiles();
+		} finally {
+			if(_callback != null) {
+				_callback.notifyFileList(files);
+			}
+		}
+	}
+}

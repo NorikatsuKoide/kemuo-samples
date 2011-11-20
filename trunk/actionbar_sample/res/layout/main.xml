@@ -34,4 +34,11 @@ OF SUCH DAMAGE.
     <!-- アクションバー -->
 	<include layout="@layout/actionbar" />
 	
+	<!-- リスト表示Fragment -->
+	<fragment android:id="@+id/fragment_filelist"
+	    class="com.yohpapa.research.actionbar.FragmentFileList"
+	    android:layout_weight="1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" />
+	
 </LinearLayout>
