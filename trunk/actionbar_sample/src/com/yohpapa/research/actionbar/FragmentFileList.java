@@ -29,55 +29,120 @@ package com.yohpapa.research.actionbar;
 
 import java.io.File;
 
+import com.yohpapa.research.actionbar.FileListGenerator.FileItem;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.ListView;
 
 public class FragmentFileList extends ListFragment {
+	
+	private static final String ARG_PATH = "PATH";
+	public static FragmentFileList newInstance(String path) {
+		
+		FragmentFileList fragment = new FragmentFileList();
+		Bundle bundle = new Bundle();
+		bundle.putString(ARG_PATH, path);
+		fragment.setArguments(bundle);
+		
+		return fragment;
+	}
 
+	private static final String KEY_CURRENT_PATH = "KEY_CURRENT_PATH";
+	
 	private Thread _thread = null;
-	private Handler _handler = null;
+	private Handler _handler = new Handler();
+	
+	private String _currentPath = Environment.getExternalStorageDirectory().toString();
 	
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
-		_handler = new Handler();
-		_thread = new Thread(
-						new FileListGenerator(
-							Environment.getExternalStorageDirectory().toString(),
-							_fileListCallback));
+		if(savedInstanceState == null) {
+			Bundle arg = getArguments();
+			if(arg == null) {
+				return;
+			}
+			_currentPath = arg.getString(ARG_PATH);
+		} else {
+			_currentPath = savedInstanceState.getString(KEY_CURRENT_PATH);
+		}
+		
+		startThread(_currentPath);
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		cancelThread();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		outState.putString(KEY_CURRENT_PATH, _currentPath);
+	}
+
+	private void startThread(String path) {
+		cancelThread();
+		_thread = new Thread(new FileListGenerator(path, _fileListCallback));
 		_thread.start();
+	}
+	
+	private void cancelThread() {
+		if(_thread == null || !_thread.isAlive())
+			return;
+		
+		_thread.interrupt();
+		try {
+			_thread.join();
+		} catch (InterruptedException e) {}
 	}
 	
 	private final FileListGenerator.Callback _fileListCallback = new FileListGenerator.Callback() {
 		@Override
-		public void notifyFileList(final File[] files) {
-			if(files == null || files.length <= 0)
-				return;
-			
+		public void notifyFileList(final FileListGenerator.FileItem[] files) {
 			_handler.post(new Runnable() {
 				@Override
 				public void run() {
-					setListAdapter(
-							new ArrayAdapter<String>(
-									getActivity(),
-									android.R.layout.simple_list_item_1,
-									getFileNameList(files)));
+					setListAdapter(new FileListAdapter(getActivity(), files));
 				}
 			});
 		}
 	};
 	
-	private String[] getFileNameList(File[] files) {
-		String[] nameList = new String[files.length];
+	@Override
+	public void onListItemClick(ListView list, View view, int position, long id) {
 		
-		for(int i = 0; i < files.length; i ++) {
-			nameList[i] = files[i].getName();
+		FileItem item = (FileItem)view.getTag(FileListAdapter.KEY_ITEM_CONTENT);
+		if(item == null)
+			return;
+		
+		if(!item.isDirectory()) {
+			// TODO:
+			// ここでmimeをとってIntentを投げる
+			return;
 		}
 		
-		return nameList;
+		String path = _currentPath + File.separator + item.getLongName();
+		
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		ft.setCustomAnimations(
+				R.anim.fragment_slide_right_enter,
+				R.anim.fragment_slide_left_exit,
+				R.anim.fragment_slide_left_enter,
+				R.anim.fragment_slide_right_exit);
+
+		Fragment next = FragmentFileList.newInstance(path);
+		ft.replace(R.id.fragment_filelist, next);
+		ft.addToBackStack(null);
+		ft.commit();
 	}
 }

@@ -27,54 +27,49 @@ OF SUCH DAMAGE.
 */
 package com.yohpapa.research.actionbar;
 
-import java.io.File;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
-public class FileListGenerator implements Runnable {
-	public interface Callback {
-		void notifyFileList(FileListGenerator.FileItem[] files);
-	}
+public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
 	
-	public class FileItem {
-		private final String _longName;
-		private final boolean _isDirectory;
+	public static final int KEY_ITEM_CONTENT = R.string.tag_item_content;
+	
+	private final LayoutInflater _inflater;
+	
+	public FileListAdapter(Context context, FileListGenerator.FileItem[] objects) {
+		super(context, R.layout.listitem_file, objects);
 		
-		public FileItem(File file) {
-			_longName = file.getName();
-			_isDirectory = file.isDirectory();
-		}
-		
-		public String getLongName() {return _longName;}
-		public boolean isDirectory() {return _isDirectory;}
+		_inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
-	
-	private final String _path;
-	private final Callback _callback;
-	public FileListGenerator(String path, Callback callback) {
-		_path = path;
-		_callback = callback;
-	}
-	
+
 	@Override
-	public void run() {
-		FileItem[] items = null;
-		try {
-			if(_path == null)
-				return;
-			
-			File file = new File(_path);
-			if(file.isFile())
-				return;
-			
-			File[] files = file.listFiles();
-			items = new FileItem[files.length];
-			for(int i = 0; i < files.length; i ++) {
-				items[i] = new FileItem(files[i]);
-			}
-			
-		} finally {
-			if(_callback != null) {
-				_callback.notifyFileList(items);
-			}
+	public View getView(int position, View convertView, ViewGroup parent) {
+
+		View view = convertView;
+		if(view == null) {
+			view = _inflater.inflate(R.layout.listitem_file, null);
 		}
+
+		if(position >= getCount())
+			return view;
+		
+		final FileListGenerator.FileItem item = getItem(position);
+		if(item == null)
+			return view;
+
+		TextView nameEntry = (TextView)view.findViewById(R.id.entry_name);
+		if(nameEntry == null)
+			return view;
+		
+		String name = item.getLongName();
+		nameEntry.setText(name);
+		
+		view.setTag(KEY_ITEM_CONTENT, item);
+		
+		return view;
 	}
 }
