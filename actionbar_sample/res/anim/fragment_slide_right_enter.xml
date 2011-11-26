@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 Copyright (c) 2011, KENSUKE NAKAI
 All rights reserved.
 
@@ -24,57 +25,19 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
-*/
-package com.yohpapa.research.actionbar;
+-->
 
-import java.io.File;
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+	android:interpolator="@anim/decelerate_quint">
 
-public class FileListGenerator implements Runnable {
-	public interface Callback {
-		void notifyFileList(FileListGenerator.FileItem[] files);
-	}
+    <!-- 右から入ってくるアニメーション -->
+	<translate xmlns:android="http://schemas.android.com/apk/res/android"
+		android:fromXDelta="100%p" android:toXDelta="0%p"
+		android:duration="500"/>
+
+	<!-- 次第に現れてくるアニメーション -->
+	<alpha
+		android:fromAlpha="0.0" android:toAlpha="1.0"
+		android:duration="500" />
 	
-	public class FileItem {
-		private final String _longName;
-		private final boolean _isDirectory;
-		
-		public FileItem(File file) {
-			_longName = file.getName();
-			_isDirectory = file.isDirectory();
-		}
-		
-		public String getLongName() {return _longName;}
-		public boolean isDirectory() {return _isDirectory;}
-	}
-	
-	private final String _path;
-	private final Callback _callback;
-	public FileListGenerator(String path, Callback callback) {
-		_path = path;
-		_callback = callback;
-	}
-	
-	@Override
-	public void run() {
-		FileItem[] items = null;
-		try {
-			if(_path == null)
-				return;
-			
-			File file = new File(_path);
-			if(file.isFile())
-				return;
-			
-			File[] files = file.listFiles();
-			items = new FileItem[files.length];
-			for(int i = 0; i < files.length; i ++) {
-				items[i] = new FileItem(files[i]);
-			}
-			
-		} finally {
-			if(_callback != null) {
-				_callback.notifyFileList(items);
-			}
-		}
-	}
-}
+</set>

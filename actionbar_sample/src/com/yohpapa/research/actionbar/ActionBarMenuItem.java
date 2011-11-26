@@ -30,10 +30,10 @@ package com.yohpapa.research.actionbar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.ActionProvider;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 
 public class ActionBarMenuItem implements MenuItem {
 
@@ -128,10 +128,6 @@ public class ActionBarMenuItem implements MenuItem {
 		return this;
 	}
 
-	@Override public boolean collapseActionView() {return false;}
-	@Override public boolean expandActionView() {return false;}
-	@Override public ActionProvider getActionProvider() {return null;}
-	@Override public View getActionView() {return null;}
 	@Override public char getAlphabeticShortcut() {return 0;}
 	@Override public int getGroupId() {return 0;}
 	@Override public Intent getIntent() {return null;}
@@ -139,22 +135,27 @@ public class ActionBarMenuItem implements MenuItem {
 	@Override public char getNumericShortcut() {return 0;}
 	@Override public SubMenu getSubMenu() {return null;}
 	@Override public boolean hasSubMenu() {return false;}
-	@Override public boolean isActionViewExpanded() {return false;}
 	@Override public boolean isCheckable() {return false;}
 	@Override public boolean isChecked() {return false;}
 	@Override public boolean isVisible() {return true;}
-	@Override public MenuItem setActionProvider(ActionProvider actionProvider) {return this;}
-	@Override public MenuItem setActionView(View view) {return this;}
-	@Override public MenuItem setActionView(int resId) {return this;}
 	@Override public MenuItem setAlphabeticShortcut(char alphaChar) {return this;}
 	@Override public MenuItem setCheckable(boolean checkable) {return this;}
 	@Override public MenuItem setChecked(boolean checked) {return this;}
 	@Override public MenuItem setIntent(Intent intent) {return this;}
 	@Override public MenuItem setNumericShortcut(char numericChar) {return this;}
-	@Override public MenuItem setOnActionExpandListener(OnActionExpandListener listener) {return this;}
 	@Override public MenuItem setOnMenuItemClickListener(OnMenuItemClickListener menuItemClickListener) {return this;}
 	@Override public MenuItem setShortcut(char numericChar, char alphaChar) {return this;}
+	@Override public MenuItem setVisible(boolean visible) {return this;}
+
+	@Override public boolean collapseActionView() {return false;}
+	@Override public boolean expandActionView() {return false;}
+	@Override public ActionProvider getActionProvider() {return null;}
+	@Override public View getActionView() {return null;}
+	@Override public boolean isActionViewExpanded() {return false;}
+	@Override public MenuItem setActionProvider(ActionProvider arg0) {return this;}
+	@Override public MenuItem setActionView(View view) {return this;}
+	@Override public MenuItem setActionView(int resId) {return this;}
+	@Override public MenuItem setOnActionExpandListener(OnActionExpandListener listener) {return this;}
 	@Override public void setShowAsAction(int actionEnum) {}
 	@Override public MenuItem setShowAsActionFlags(int actionEnum) {return this;}
-	@Override public MenuItem setVisible(boolean visible) {return this;}
 }

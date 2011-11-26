@@ -30,4 +30,7 @@ OF SUCH DAMAGE.
 	<string name="app_name">ActionbarSample</string>
 	<string name="actionbar_search">Search</string>
 	<string name="actionbar_setup">Setup</string>
+	
+	<!-- 内部で使う定数 -->
+	<string name="tag_item_content">tag_item_content</string>
 </resources>

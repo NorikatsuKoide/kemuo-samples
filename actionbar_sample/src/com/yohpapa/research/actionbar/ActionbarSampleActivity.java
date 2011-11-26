@@ -28,7 +28,10 @@ OF SUCH DAMAGE.
 package com.yohpapa.research.actionbar;
 
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +45,15 @@ public class ActionbarSampleActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		if(savedInstanceState != null)
+			return;
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		Fragment fragment = FragmentFileList.newInstance(
+									Environment.getExternalStorageDirectory().toString());
+		ft.add(R.id.fragment_filelist, fragment);
+		ft.commit();
 	}
 
 	@Override
