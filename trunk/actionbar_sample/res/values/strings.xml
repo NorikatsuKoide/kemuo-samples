@@ -33,4 +33,6 @@ OF SUCH DAMAGE.
 	
 	<!-- 内部で使う定数 -->
 	<string name="tag_item_content">tag_item_content</string>
+	<string name="prefs_name">prefs_name</string>
+	<string name="prefs_key_name_type">prefs_key_name_type</string>
 </resources>

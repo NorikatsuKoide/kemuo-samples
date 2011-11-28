@@ -39,11 +39,14 @@ public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
 	public static final int KEY_ITEM_CONTENT = R.string.tag_item_content;
 	
 	private final LayoutInflater _inflater;
+	private boolean _isShort = true;
 	
-	public FileListAdapter(Context context, FileListGenerator.FileItem[] objects) {
+	public FileListAdapter(
+			Context context, FileListGenerator.FileItem[] objects, boolean isShort) {
 		super(context, R.layout.listitem_file, objects);
 		
 		_inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		_isShort = isShort;
 	}
 
 	@Override
@@ -64,12 +67,23 @@ public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
 		TextView nameEntry = (TextView)view.findViewById(R.id.entry_name);
 		if(nameEntry == null)
 			return view;
+
+		String name;
+		if(_isShort) {
+			name = item.getShortName();
+		} else {
+			name = item.getLongName();
+		}
 		
-		String name = item.getLongName();
 		nameEntry.setText(name);
 		
 		view.setTag(KEY_ITEM_CONTENT, item);
 		
 		return view;
+	}
+	
+	public void update(boolean isShort) {
+		_isShort = isShort;
+		notifyDataSetChanged();
 	}
 }

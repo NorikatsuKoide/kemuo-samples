@@ -28,6 +28,8 @@ OF SUCH DAMAGE.
 package com.yohpapa.research.actionbar;
 
 import java.io.File;
+import java.util.Observable;
+import java.util.Observer;
 
 import com.yohpapa.research.actionbar.FileListGenerator.FileItem;
 
@@ -60,6 +62,20 @@ public class FragmentFileList extends ListFragment {
 	
 	private String _currentPath = Environment.getExternalStorageDirectory().toString();
 	
+	private final Observer _observer = new Observer() {
+		@Override
+		public void update(Observable observable, Object data) {
+			if((Integer)data != ActionbarSampleActivity.NAME_TYPE_CHANGED)
+				return;
+			
+			FileListAdapter adapter = (FileListAdapter)getListAdapter();
+			if(adapter == null)
+				return;
+			
+			adapter.update(PreferenceManager.getNameType(getActivity()));
+		}
+	};
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,12 +90,19 @@ public class FragmentFileList extends ListFragment {
 			_currentPath = savedInstanceState.getString(KEY_CURRENT_PATH);
 		}
 		
+		ActionbarSampleActivity parent = (ActionbarSampleActivity)getActivity();
+		parent.addObserver(_observer);
+		
 		startThread(_currentPath);
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		
+		ActionbarSampleActivity parent = (ActionbarSampleActivity)getActivity();
+		parent.deleteObserver(_observer);
+		
 		cancelThread();
 	}
 
@@ -112,7 +135,11 @@ public class FragmentFileList extends ListFragment {
 			_handler.post(new Runnable() {
 				@Override
 				public void run() {
-					setListAdapter(new FileListAdapter(getActivity(), files));
+					setListAdapter(
+							new FileListAdapter(
+									getActivity(),
+									files,
+									PreferenceManager.getNameType(getActivity())));
 				}
 			});
 		}

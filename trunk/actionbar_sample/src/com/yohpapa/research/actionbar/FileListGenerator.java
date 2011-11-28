@@ -28,23 +28,56 @@ OF SUCH DAMAGE.
 package com.yohpapa.research.actionbar;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 public class FileListGenerator implements Runnable {
 	public interface Callback {
 		void notifyFileList(FileListGenerator.FileItem[] files);
 	}
 	
-	public class FileItem {
+	public static class FileItem {
+		static {
+			System.loadLibrary("shortname");
+		}
+		
 		private final String _longName;
 		private final boolean _isDirectory;
+		private final String _shortName;
 		
-		public FileItem(File file) {
+		public FileItem(String path, File file) {
 			_longName = file.getName();
 			_isDirectory = file.isDirectory();
+			byte[] shortName = GetShortName(path, _longName);
+			_shortName = encodeShortName(shortName);
 		}
 		
 		public String getLongName() {return _longName;}
 		public boolean isDirectory() {return _isDirectory;}
+		public String getShortName() {return _shortName;}
+		
+		native byte[] GetShortName(String dir, String longName);
+		
+		private String encodeShortName(byte[] shortName) {
+			try {
+				
+				byte[] unicode = new String(shortName, "UTF-8").getBytes("UTF-16BE");
+				byte[] cp437 = uni2cp437(unicode);
+				return new String(cp437, "Shift_JIS");
+				
+			} catch (UnsupportedEncodingException e) {
+				return null;
+			}
+		}
+		
+		private byte[] uni2cp437(byte[] unicode) {
+			byte[] destination = new byte[unicode.length / 2];
+			
+			for(int i = 0, j = 0; i < unicode.length; i += 2) {
+				destination[j ++] = Cp437.lookup(unicode[i], unicode[i + 1]);
+			}
+			
+			return destination;
+		}
 	}
 	
 	private final String _path;
@@ -68,7 +101,7 @@ public class FileListGenerator implements Runnable {
 			File[] files = file.listFiles();
 			items = new FileItem[files.length];
 			for(int i = 0; i < files.length; i ++) {
-				items[i] = new FileItem(files[i]);
+				items[i] = new FileItem(_path, files[i]);
 			}
 			
 		} finally {
