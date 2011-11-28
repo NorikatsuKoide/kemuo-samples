@@ -27,6 +27,9 @@ OF SUCH DAMAGE.
 */
 package com.yohpapa.research.actionbar;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -39,6 +42,8 @@ import android.widget.Toast;
 
 public class ActionbarSampleActivity extends FragmentActivity {
 
+	public static final int NAME_TYPE_CHANGED = 0;
+	
 	private final ActionBarHelper _helper = new ActionBarHelper(this);
 	
 	@Override
@@ -78,7 +83,8 @@ public class ActionbarSampleActivity extends FragmentActivity {
 			break;
 			
 		case R.id.menu_setup:
-			Toast.makeText(this, "menu_setup", Toast.LENGTH_SHORT).show();
+			PreferenceManager.setNameType(this, !PreferenceManager.getNameType(this));
+			_observable.notifyObservers(NAME_TYPE_CHANGED);
 			break;
 			
 		default:
@@ -97,5 +103,21 @@ public class ActionbarSampleActivity extends FragmentActivity {
 			return true;
 		
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	private final Observable _observable = new Observable() {
+		@Override
+		public void notifyObservers(Object data) {
+			setChanged();
+			super.notifyObservers(data);
+		}
+	};
+
+	public void addObserver(Observer observer) {
+		_observable.addObserver(observer);
+	}
+	
+	public void deleteObserver(Observer observer) {
+		_observable.deleteObserver(observer);
 	}
 }
