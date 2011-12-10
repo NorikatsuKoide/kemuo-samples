@@ -1,4 +1,4 @@
-/*
+/**
 Copyright (c) 2011, KENSUKE NAKAI
 All rights reserved.
 
@@ -35,33 +35,69 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class SearchSampleActivity extends FragmentActivity {
+	@SuppressWarnings("unused")
 	private static final String TAG = SearchSampleActivity.class.getSimpleName();
 
+	private final ActionBarHelper _helper = new ActionBarHelper(this);
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		
-		Button button = (Button)findViewById(R.id.button);
-		button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				boolean result = SearchSampleActivity.this.onSearchRequested();
-				Log.d(TAG, "result: " + result);
-			}
-		});
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		Fragment fragment = FragmentFileList.newInstance(Environment.getExternalStorageDirectory().getPath());
 		ft.add(R.id.fragment_filelist, fragment);
 		ft.commit();
+	}
+	
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		_helper.setup(null);
+		_helper.onPostCreate(savedInstanceState);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_default, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean result = true;
+		switch(item.getItemId()) {
+		case R.id.menu_search:
+			result = onSearchRequested();
+			break;
+			
+		case R.id.menu_setup:
+			PreferenceManager.setNameType(this, !PreferenceManager.getNameType(this));
+			_observable.notifyObservers(SearchSampleApp.NAME_TYPE_CHANGED);
+			break;
+			
+		default:
+			result = super.onOptionsItemSelected(item);
+			break;
+		}
+		return result;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		
+		// ヘルパーが処理したら親にはイベントを渡さない
+		boolean result = _helper.onKeyDown(keyCode, event);
+		if(result)
+			return true;
+		
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	private final Observable _observable = new Observable() {

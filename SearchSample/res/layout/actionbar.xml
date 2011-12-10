@@ -26,16 +26,6 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/menu_search"
-		android:icon="@drawable/ic_title_search"
-		android:title="earch"
-		android:orderInCategory="1"
-		android:showAsAction="ifRoom" />
-	
-	<item android:id="@+id/menu_setup"
-		android:icon="@drawable/ic_title_setup"
-		android:title="setup"
-		android:orderInCategory="1"
-		android:showAsAction="ifRoom" />
-</menu>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<LinearLayout style="@style/ActionBar" />
+</merge>
