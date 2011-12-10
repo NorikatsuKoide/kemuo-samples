@@ -27,54 +27,63 @@ OF SUCH DAMAGE.
 */
 package com.yohpapa.research.searchsample;
 
-import java.util.Observable;
-import java.util.Observer;
-
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
-public class SearchSampleActivity extends FragmentActivity {
-	private static final String TAG = SearchSampleActivity.class.getSimpleName();
+public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
+	
+	public static final int KEY_ITEM_CONTENT = R.string.tag_item_content;
+	
+	private final LayoutInflater _inflater;
+	private boolean _isShort = true;
+	
+	public FileListAdapter(
+			Context context, FileListGenerator.FileItem[] objects, boolean isShort) {
+		super(context, R.layout.listitem_file, objects);
+		
+		_inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		_isShort = isShort;
+	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		
-		Button button = (Button)findViewById(R.id.button);
-		button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				boolean result = SearchSampleActivity.this.onSearchRequested();
-				Log.d(TAG, "result: " + result);
-			}
-		});
-		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		Fragment fragment = FragmentFileList.newInstance(Environment.getExternalStorageDirectory().getPath());
-		ft.add(R.id.fragment_filelist, fragment);
-		ft.commit();
-	}
-	
-	private final Observable _observable = new Observable() {
-		@Override
-		public void notifyObservers(Object data) {
-			setChanged();
-			super.notifyObservers(data);
+	public View getView(int position, View convertView, ViewGroup parent) {
+
+		View view = convertView;
+		if(view == null) {
+			view = _inflater.inflate(R.layout.listitem_file, null);
 		}
-	};
-	
-	public void addObserver(Observer observer) {
-		_observable.addObserver(observer);
+
+		if(position >= getCount())
+			return view;
+		
+		final FileListGenerator.FileItem item = getItem(position);
+		if(item == null)
+			return view;
+
+		TextView nameEntry = (TextView)view.findViewById(R.id.entry_name);
+		if(nameEntry == null)
+			return view;
+
+		String name;
+		if(_isShort) {
+			name = item.getShortName();
+		} else {
+			name = item.getLongName();
+		}
+		
+		nameEntry.setText(name);
+		
+		view.setTag(KEY_ITEM_CONTENT, item);
+		
+		return view;
 	}
 	
-	public void deleteObserver(Observer observer) {
-		_observable.deleteObserver(observer);
+	public void update(boolean isShort) {
+		_isShort = isShort;
+		notifyDataSetChanged();
 	}
 }

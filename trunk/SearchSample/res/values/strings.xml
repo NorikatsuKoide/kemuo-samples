@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, SearchSampleActivity!</string>
-    <string name="app_name">SearchSample</string>
+	<string name="hello">Hello World, SearchSampleActivity!</string>
+	<string name="app_name">SearchSample</string>
+	<string name="tag_item_content">tag_item_content</string>
+	<string name="prefs_name">prefs_name</string>
+	<string name="prefs_key_name_type">prefs_key_name_type</string>
 
 </resources>

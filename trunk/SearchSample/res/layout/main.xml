@@ -9,4 +9,10 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"/>
 	
+	<!-- リスト表示Fragment -->
+	<FrameLayout android:id="@+id/fragment_filelist"
+	    android:layout_weight="1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" />
+	
 </LinearLayout>
