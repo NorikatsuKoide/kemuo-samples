@@ -27,10 +27,13 @@ OF SUCH DAMAGE.
 */
 package com.yohpapa.research.searchsample;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.widget.TextView;
 
 public class SearchableActivity extends Activity {
@@ -45,8 +48,19 @@ public class SearchableActivity extends Activity {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
 			String path = appData.getString(SearchSampleApp.CURRENT_PATH);
+			
+			boolean isDir = false;
+			File file = new File(path + File.separator + query);
+			if(file.isDirectory()) {
+				isDir = true;
+			}
+			
 			TextView text = (TextView)findViewById(R.id.text);
 			text.setText("Query: " + query + ", Current path: " + path);
+			
+			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
+					this, RecentSuggestionsProvider.AUTHORITY, RecentSuggestionsProvider.MODE);
+			suggestions.saveRecentQuery(query, isDir ? "Folder" : "File");
 		}
 	}
 }

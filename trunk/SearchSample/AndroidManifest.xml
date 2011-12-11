@@ -61,6 +61,10 @@ OF SUCH DAMAGE.
 				android:name="android.app.searchable"
 				android:resource="@xml/searchable" />
 		</activity>
+		
+ 		<provider
+ 		    android:name=".RecentSuggestionsProvider"
+ 		    android:authorities="com.yohpapa.research.searchsample.RecentSuggestionsProvider" />
  		
 	</application>
 
