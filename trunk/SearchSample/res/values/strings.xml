@@ -30,6 +30,7 @@ OF SUCH DAMAGE.
 
 	<string name="hello">Hello World, SearchSampleActivity!</string>
 	<string name="app_name">SearchSample</string>
+	<string name="search_hint">Input search keyword</string>
 	<string name="tag_item_content">tag_item_content</string>
 	<string name="prefs_name">prefs_name</string>
 	<string name="prefs_key_name_type">prefs_key_name_type</string>

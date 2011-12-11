@@ -43,8 +43,10 @@ public class SearchableActivity extends Activity {
 		Intent intent = getIntent();
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
+			Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
+			String path = appData.getString(SearchSampleApp.CURRENT_PATH);
 			TextView text = (TextView)findViewById(R.id.text);
-			text.setText(query);
+			text.setText("Query: " + query + ", Current path: " + path);
 		}
 	}
 }
