@@ -155,4 +155,8 @@ public class FragmentFileList extends ListFragment {
 		ft.addToBackStack(null);
 		ft.commit();
 	}
+	
+	public String getCurrentPath() {
+		return _currentPath;
+	}
 }

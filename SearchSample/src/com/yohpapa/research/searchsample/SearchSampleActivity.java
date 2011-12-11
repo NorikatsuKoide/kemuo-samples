@@ -115,4 +115,13 @@ public class SearchSampleActivity extends FragmentActivity {
 	public void deleteObserver(Observer observer) {
 		_observable.deleteObserver(observer);
 	}
+
+	@Override
+	public boolean onSearchRequested() {
+		FragmentFileList fragment = (FragmentFileList)getSupportFragmentManager().findFragmentById(R.id.fragment_filelist);
+		Bundle appData = new Bundle();
+		appData.putString(SearchSampleApp.CURRENT_PATH, fragment.getCurrentPath());
+		startSearch(null, false, appData, false);
+		return true;
+	}
 }
