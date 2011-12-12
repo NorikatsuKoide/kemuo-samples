@@ -63,8 +63,8 @@ OF SUCH DAMAGE.
 		</activity>
 		
  		<provider
- 		    android:name=".RecentSuggestionsProvider"
- 		    android:authorities="com.yohpapa.research.searchsample.RecentSuggestionsProvider" />
+ 		    android:name=".CustomSuggestionsProvider"
+ 		    android:authorities="com.yohpapa.research.searchsample.CustomSuggestions" />
  		
 	</application>
 
