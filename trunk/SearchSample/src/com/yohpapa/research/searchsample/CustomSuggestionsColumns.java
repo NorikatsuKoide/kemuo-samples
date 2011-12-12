@@ -27,37 +27,29 @@ OF SUCH DAMAGE.
 */
 package com.yohpapa.research.searchsample;
 
-import android.app.Activity;
 import android.app.SearchManager;
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.TextView;
+import android.net.Uri;
+import android.provider.BaseColumns;
 
-public class SearchableActivity extends Activity {
+public interface CustomSuggestionsColumns extends BaseColumns {
+	
+	public static final String AUTHORITY = "com.yohpapa.research.searchsample.CustomSuggestions";
+	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/suggestions");
+	public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.yohpapa.suggestion";
+	public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.yohpapa.suggestion";
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.search);
-		
-		Intent intent = getIntent();
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
-			String path = appData.getString(SearchSampleApp.CURRENT_PATH);
-			
-			//boolean isDir = false;
-			//File file = new File(path + File.separator + query);
-			//if(file.isDirectory()) {
-			//	isDir = true;
-			//}
-			
-			TextView text = (TextView)findViewById(R.id.text);
-			text.setText("Query: " + query + ", Current path: " + path);
-			
-			//SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-			//		this, RecentSuggestionsProvider.AUTHORITY, RecentSuggestionsProvider.MODE);
-			//suggestions.saveRecentQuery(query, isDir ? "Folder" : "File");
-		}
-	}
+	// Required columns
+	public static final String TEXT_1 = SearchManager.SUGGEST_COLUMN_TEXT_1;
+	
+	// Optional columns
+	public static final String TEXT_2 = SearchManager.SUGGEST_COLUMN_TEXT_2;
+	public static final String ICON_1 = SearchManager.SUGGEST_COLUMN_ICON_1;
+	public static final String ICON_2 = SearchManager.SUGGEST_COLUMN_ICON_2;
+	public static final String INTENT_ACTION = SearchManager.SUGGEST_COLUMN_INTENT_ACTION;
+	public static final String INTENT_DATA = SearchManager.SUGGEST_COLUMN_INTENT_DATA;
+	public static final String INTENT_DATA_ID = SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID;
+	public static final String INTENT_EXTRA_DATA = SearchManager.SUGGEST_COLUMN_INTENT_EXTRA_DATA;
+	public static final String QUERY = SearchManager.SUGGEST_COLUMN_QUERY;
+	public static final String SHORTCUT_ID = SearchManager.SUGGEST_COLUMN_SHORTCUT_ID;
+	public static final String SPINNER_WHILE_REFRESHING = SearchManager.SUGGEST_COLUMN_SPINNER_WHILE_REFRESHING;
 }

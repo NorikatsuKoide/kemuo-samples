@@ -30,8 +30,11 @@ package com.yohpapa.research.searchsample;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -39,11 +42,14 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
+
 public class SearchSampleActivity extends FragmentActivity {
 	@SuppressWarnings("unused")
 	private static final String TAG = SearchSampleActivity.class.getSimpleName();
 
 	private final ActionBarHelper _helper = new ActionBarHelper(this);
+	private final Handler _handler = new Handler();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +80,7 @@ public class SearchSampleActivity extends FragmentActivity {
 		boolean result = true;
 		switch(item.getItemId()) {
 		case R.id.menu_search:
-			result = onSearchRequested();
+			onOptionMenuSearchSelected();
 			break;
 			
 		case R.id.menu_setup:
@@ -116,11 +122,39 @@ public class SearchSampleActivity extends FragmentActivity {
 		_observable.deleteObserver(observer);
 	}
 
+	private void onOptionMenuSearchSelected() {
+		String path = getCurrentPath();
+		FileListGenerator.start(path, null, new FileListGenerator.Callback() {
+			@Override
+			public void notifyFileList(final FileItem[] files) {
+				_handler.post(new Runnable() {
+					@Override
+					public void run() {
+						ContentResolver resolver = getContentResolver();
+						resolver.delete(CustomSuggestionsColumns.CONTENT_URI, null, null);
+						for(FileItem file : files) {
+							ContentValues values = new ContentValues();
+							values.put(CustomSuggestionsColumns.TEXT_1, file.getLongName());
+							values.put(CustomSuggestionsColumns.TEXT_2, file.getShortName());
+							resolver.insert(CustomSuggestionsColumns.CONTENT_URI, values);
+						}
+						
+						onSearchRequested();
+					}
+				});
+			}
+		});
+	}
+	
+	private String getCurrentPath() {
+		FragmentFileList fragment = (FragmentFileList)getSupportFragmentManager().findFragmentById(R.id.fragment_filelist);
+		return fragment.getCurrentPath();
+	}
+	
 	@Override
 	public boolean onSearchRequested() {
-		FragmentFileList fragment = (FragmentFileList)getSupportFragmentManager().findFragmentById(R.id.fragment_filelist);
 		Bundle appData = new Bundle();
-		appData.putString(SearchSampleApp.CURRENT_PATH, fragment.getCurrentPath());
+		appData.putString(SearchSampleApp.CURRENT_PATH, getCurrentPath());
 		startSearch(null, false, appData, false);
 		return true;
 	}
