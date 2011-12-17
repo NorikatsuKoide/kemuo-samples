@@ -136,6 +136,7 @@ public class SearchSampleActivity extends FragmentActivity {
 							ContentValues values = new ContentValues();
 							values.put(CustomSuggestionsColumns.TEXT_1, file.getLongName());
 							values.put(CustomSuggestionsColumns.TEXT_2, file.getShortName());
+							values.put(CustomSuggestionsColumns.INTENT_DATA, file.getLongName());
 							resolver.insert(CustomSuggestionsColumns.CONTENT_URI, values);
 						}
 						

@@ -58,6 +58,12 @@ public class SearchableActivity extends Activity {
 			//SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
 			//		this, RecentSuggestionsProvider.AUTHORITY, RecentSuggestionsProvider.MODE);
 			//suggestions.saveRecentQuery(query, isDir ? "Folder" : "File");
+		} else if(Intent.ACTION_VIEW.equals(intent.getAction())) {
+			String data = intent.getData().getPath();
+			Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
+			String path = appData.getString(SearchSampleApp.CURRENT_PATH);
+			TextView text = (TextView)findViewById(R.id.text);
+			text.setText("Data: " + data + ", Current path: " + path);
 		}
 	}
 }

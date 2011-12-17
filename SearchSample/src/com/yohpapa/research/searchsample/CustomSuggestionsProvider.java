@@ -40,7 +40,7 @@ import android.net.Uri;
 public class CustomSuggestionsProvider extends ContentProvider {
 
 	private static final String DB_FILENAME = "suggestions.db";
-	private static final int DB_VERSION = 3;
+	private static final int DB_VERSION = 4;
 	private static final String TABLE_NAME = CustomSuggestionsProvider.class.getSimpleName();
 	
 	private static class DBHelper extends SQLiteOpenHelper {
@@ -54,7 +54,8 @@ public class CustomSuggestionsProvider extends ContentProvider {
 					"CREATE TABLE " + TABLE_NAME + "(" +
 					CustomSuggestionsColumns._ID + " INTEGER PRIMARY KEY," +
 					CustomSuggestionsColumns.TEXT_1 + " TEXT," +
-					CustomSuggestionsColumns.TEXT_2 + " TEXT" +
+					CustomSuggestionsColumns.TEXT_2 + " TEXT," +
+					CustomSuggestionsColumns.INTENT_DATA + " TEXT" +
 					");");
 		}
 
@@ -129,6 +130,7 @@ public class CustomSuggestionsProvider extends ContentProvider {
 				CustomSuggestionsColumns._ID,
 				CustomSuggestionsColumns.TEXT_1,
 				CustomSuggestionsColumns.TEXT_2,
+				CustomSuggestionsColumns.INTENT_DATA,
 			};
 			whereArgs[0] = whereArgs[0] + "%";
 			cursor = db.query(TABLE_NAME, projection, where, whereArgs, null, null, sortOrder);

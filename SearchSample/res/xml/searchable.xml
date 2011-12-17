@@ -31,5 +31,6 @@ OF SUCH DAMAGE.
 	android:hint="@string/search_hint"
 	android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
 	android:searchSuggestAuthority="com.yohpapa.research.searchsample.CustomSuggestions"
-	android:searchSuggestSelection="suggest_text_1 LIKE ?">
+	android:searchSuggestSelection="suggest_text_1 LIKE ?"
+	android:searchSuggestIntentAction="android.intent.action.VIEW">
 </searchable>
