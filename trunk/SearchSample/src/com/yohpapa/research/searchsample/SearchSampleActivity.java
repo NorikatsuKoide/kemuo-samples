@@ -27,11 +27,14 @@ OF SUCH DAMAGE.
 */
 package com.yohpapa.research.searchsample;
 
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -41,12 +44,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
 
 public class SearchSampleActivity extends FragmentActivity {
 	@SuppressWarnings("unused")
 	private static final String TAG = SearchSampleActivity.class.getSimpleName();
+	private static final String ROOT_PATH = Environment.getExternalStorageDirectory().getPath();
 
 	private final ActionBarHelper _helper = new ActionBarHelper(this);
 	private final Handler _handler = new Handler();
@@ -56,10 +61,43 @@ public class SearchSampleActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		Intent intent = getIntent();
+		String action = intent.getAction();
+		String path;
+		if(Intent.ACTION_SEARCH.equals(action)) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			path = getPath(intent, query);
+		} else if(Intent.ACTION_VIEW.equals(action)) {
+			String select = intent.getDataString();
+			path = getPath(intent, select);
+		} else {
+			// TODO:
+			// CurrentPathを復帰する必要あり (回転時とか)
+			path = ROOT_PATH;
+		}
+		
+		File file = new File(path);
+		if(!file.exists()) {
+			finish();
+			return;
+		}
+		
+		if(file.isFile()) {
+			Toast.makeText(this, file.getName(), Toast.LENGTH_SHORT).show();
+			finish();
+			return;
+		}
+		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		Fragment fragment = FragmentFileList.newInstance(Environment.getExternalStorageDirectory().getPath());
+		Fragment fragment = FragmentFileList.newInstance(path);
 		ft.add(R.id.fragment_filelist, fragment);
 		ft.commit();
+	}
+	
+	private String getPath(Intent intent, String fileName) {
+		Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
+		String path = appData.getString(SearchSampleApp.CURRENT_PATH);
+		return path + File.separator + fileName;
 	}
 	
 	@Override

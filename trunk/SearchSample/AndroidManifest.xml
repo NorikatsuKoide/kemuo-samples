@@ -44,16 +44,19 @@ OF SUCH DAMAGE.
 			android:label="@string/app_name"
 			android:name=".SearchSampleActivity"
 			android:theme="@style/Theme.ActionBar" >
+			
+			<!-- 先頭起動オプション -->
 			<intent-filter >
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+			
+			<!-- 検索起点オプション -->
 			<meta-data
 				android:name="android.app.default_searchable"
-				android:value=".SearchableActivity" />
-		</activity>
-		
-		<activity android:name=".SearchableActivity">
+				android:value=".SearchSampleActivity" />
+			
+			<!-- 検索結果オプション -->
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />
 			</intent-filter>
