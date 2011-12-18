@@ -44,7 +44,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
 
@@ -83,8 +82,8 @@ public class SearchSampleActivity extends FragmentActivity {
 		}
 		
 		if(file.isFile()) {
-			Toast.makeText(this, file.getName(), Toast.LENGTH_SHORT).show();
-			finish();
+			ActivityUtils.startActivityAndFinish(
+					this, file.getAbsolutePath(), Intent.ACTION_VIEW);
 			return;
 		}
 		

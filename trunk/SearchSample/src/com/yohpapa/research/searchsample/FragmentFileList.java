@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -39,7 +40,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
 
@@ -73,7 +73,7 @@ public class FragmentFileList extends ListFragment {
 			if(adapter == null)
 				return;
 			
-			adapter.update(PreferenceManager.getNameType(getActivity()));
+			adapter.update(PreferenceManager.getNameType(FragmentFileList.this.getActivity()));
 		}
 	};
 	
@@ -90,18 +90,26 @@ public class FragmentFileList extends ListFragment {
 		} else {
 			_currentPath = savedInstanceState.getString(KEY_CURRENT_PATH);
 		}
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
 		
 		SearchSampleActivity parent = (SearchSampleActivity)getActivity();
 		parent.addObserver(_observer);
 		
 		FileListGenerator.start(_currentPath, null, _fileListCallback);
 	}
-	
+
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
+	public void onPause() {
+		super.onPause();
 		
 		FileListGenerator.cancel();
+		
+		SearchSampleActivity parent = (SearchSampleActivity)getActivity();
+		parent.deleteObserver(_observer);
 	}
 
 	@Override
@@ -134,14 +142,13 @@ public class FragmentFileList extends ListFragment {
 		if(item == null)
 			return;
 		
+		String path = _currentPath + File.separator + item.getLongName();
+		
 		if(!item.isDirectory()) {
-			// TODO:
-			// ここでmimeをとってIntentを投げる
-			Toast.makeText(getActivity(), item.getLongName(), Toast.LENGTH_SHORT).show();
+			ActivityUtils.startActivity(
+						getActivity(), path, Intent.ACTION_VIEW);
 			return;
 		}
-		
-		String path = _currentPath + File.separator + item.getLongName();
 		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.setCustomAnimations(
