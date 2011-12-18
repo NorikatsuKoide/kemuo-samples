@@ -28,12 +28,7 @@ OF SUCH DAMAGE.
 -->
 <resources>
 
-	<string name="hello">Hello World, SearchSampleActivity!</string>
-	<string name="app_name">SearchSample</string>
-	<string name="search_hint">Input search keyword</string>
-	<string name="toast_app_not_found">Application not found</string>
-	<string name="tag_item_content">tag_item_content</string>
-	<string name="prefs_name">prefs_name</string>
-	<string name="prefs_key_name_type">prefs_key_name_type</string>
+	<string name="search_hint">キーワードを入力して下さい</string>
+	<string name="toast_app_not_found">アプリケーションがありません</string>
 
 </resources>
