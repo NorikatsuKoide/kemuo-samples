@@ -29,6 +29,7 @@ package com.yohpapa.research.searchsample;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 public class FileListGenerator implements Runnable {
 	public interface Callback {
@@ -36,8 +37,27 @@ public class FileListGenerator implements Runnable {
 	}
 	
 	public static class FileItem {
+		static String SHORTNAME_ENCODE = "ISO-8859-1";
 		static {
 			System.loadLibrary("shortname");
+		}
+		
+		public static void initialize() {
+			Locale locale = Locale.getDefault();
+			if(Locale.JAPAN.equals(locale)) {
+				SHORTNAME_ENCODE = "Shift_JIS";
+			} else if(Locale.KOREA.equals(locale)) {
+				//SHORTNAME_ENCODE = "";
+			} else if(Locale.SIMPLIFIED_CHINESE.equals(locale)) {
+				SHORTNAME_ENCODE = "GBK";
+			} else if(Locale.TRADITIONAL_CHINESE.equals(locale)) {
+				SHORTNAME_ENCODE = "Big5";
+			}
+			
+			/**
+			 * ちなみにJavaで使える文字コードの一覧はこちら
+			 * http://java.sun.com/j2se/1.5.0/ja/docs/ja/guide/intl/encoding.doc.html
+			 */
 		}
 		
 		private final String _longName;
@@ -66,7 +86,7 @@ public class FileListGenerator implements Runnable {
 				
 				byte[] unicode = new String(shortName, "UTF-8").getBytes("UTF-16BE");
 				byte[] cp437 = uni2cp437(unicode);
-				return new String(cp437, "Shift_JIS");
+				return new String(cp437, SHORTNAME_ENCODE);
 				
 			} catch (UnsupportedEncodingException e) {
 				return null;
@@ -95,6 +115,8 @@ public class FileListGenerator implements Runnable {
 	
 	@Override
 	public void run() {
+		FileItem.initialize();
+		
 		FileItem[] items = null;
 		try {
 			if(_path == null)
