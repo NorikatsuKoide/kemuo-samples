@@ -48,30 +48,29 @@ public class ActionBarHelper {
 	}
 	
 	private Activity _activity = null;
+	private ViewGroup _actionBar = null;
+	private TextView _titleView = null;
 	
 	public ActionBarHelper(Activity activity) {
 		_activity = activity;
-	}
-	
-	public void setup(String title) {
-		final ViewGroup actionBar = getActionBar();
-		if(actionBar == null)
-			return;
+		_actionBar = getActionBar();
 		
-		// タイトルを設定する
 		LinearLayout.LayoutParams layoutParams =
 				new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.FILL_PARENT);
 		layoutParams.weight = 1;
 		
-		TextView titleView = new TextView(_activity, null, R.attr.actionbarTextStyle);
-		titleView.setLayoutParams(layoutParams);
-		if(title == null) {
-			titleView.setText(R.string.app_name);
-		} else {
-			titleView.setText(title);
-		}
+		_titleView = new TextView(_activity, null, R.attr.actionbarTextStyle);
+		_titleView.setLayoutParams(layoutParams);
 		
-		actionBar.addView(titleView);
+		_actionBar.addView(_titleView);
+	}
+	
+	public void setup(String title) {
+		if(title == null) {
+			_titleView.setText(R.string.app_name);
+		} else {
+			_titleView.setText(title);
+		}
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

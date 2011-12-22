@@ -58,10 +58,13 @@ public class FragmentFileList extends ListFragment {
 		return fragment;
 	}
 
+	private static final String EXTERNAL_STORAGE = Environment.getExternalStorageDirectory().getPath();
 	private static final String KEY_CURRENT_PATH = "KEY_CURRENT_PATH";
+	private static final String KEY_LIST_POSITION = "KEY_LIST_POSITION";
 	
 	private Handler _handler = new Handler();
-	private String _currentPath = Environment.getExternalStorageDirectory().toString();
+	private String _currentPath = EXTERNAL_STORAGE;
+	private int _listPosition = 0;
 	
 	private final Observer _observer = new Observer() {
 		@Override
@@ -81,14 +84,15 @@ public class FragmentFileList extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		if(savedInstanceState == null) {
-			Bundle arg = getArguments();
-			if(arg == null) {
-				return;
-			}
-			_currentPath = arg.getString(ARG_PATH);
-		} else {
-			_currentPath = savedInstanceState.getString(KEY_CURRENT_PATH);
+		// バンドルから表示パス取得
+		Bundle arg = getArguments();
+		if(arg == null)
+			return;
+		_currentPath = arg.getString(ARG_PATH);
+		
+		// インスタンス保存状態から表示位置取得
+		if(savedInstanceState != null) {
+			_listPosition = savedInstanceState.getInt(KEY_LIST_POSITION);
 		}
 	}
 	
@@ -99,7 +103,21 @@ public class FragmentFileList extends ListFragment {
 		SearchSampleActivity parent = (SearchSampleActivity)getActivity();
 		parent.addObserver(_observer);
 		
+		parent.setActionBarTitle(getCurrentFolderName(_currentPath));
+		
 		FileListGenerator.start(_currentPath, null, _fileListCallback);
+	}
+	
+	private String getCurrentFolderName(String fullPath) {
+		
+		if(EXTERNAL_STORAGE.equals(fullPath))
+			return null;
+		
+		int lastIndex = fullPath.lastIndexOf(File.separator);
+		if(lastIndex == -1)
+			return getString(R.string.app_name);
+		
+		return fullPath.substring(lastIndex + 1);
 	}
 
 	@Override
@@ -110,6 +128,8 @@ public class FragmentFileList extends ListFragment {
 		
 		SearchSampleActivity parent = (SearchSampleActivity)getActivity();
 		parent.deleteObserver(_observer);
+		
+		_listPosition = getListView().getFirstVisiblePosition();
 	}
 
 	@Override
@@ -117,6 +137,7 @@ public class FragmentFileList extends ListFragment {
 		super.onSaveInstanceState(outState);
 		
 		outState.putString(KEY_CURRENT_PATH, _currentPath);
+		outState.putInt(KEY_LIST_POSITION, getListView().getFirstVisiblePosition());
 	}
 
 	private final FileListGenerator.Callback _fileListCallback = new FileListGenerator.Callback() {
@@ -130,6 +151,7 @@ public class FragmentFileList extends ListFragment {
 									getActivity(),
 									files,
 									PreferenceManager.getNameType(getActivity())));
+					setSelection(_listPosition);
 				}
 			});
 		}

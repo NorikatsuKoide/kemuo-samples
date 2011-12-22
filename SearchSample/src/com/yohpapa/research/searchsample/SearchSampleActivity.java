@@ -52,13 +52,16 @@ public class SearchSampleActivity extends FragmentActivity {
 	private static final String TAG = SearchSampleActivity.class.getSimpleName();
 	private static final String ROOT_PATH = Environment.getExternalStorageDirectory().getPath();
 
-	private final ActionBarHelper _helper = new ActionBarHelper(this);
-	private final Handler _handler = new Handler();
+	private ActionBarHelper _helper = null;
+	private Handler _handler = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		_helper = new ActionBarHelper(this);
+		_handler = new Handler();
 		
 		Intent intent = getIntent();
 		String action = intent.getAction();
@@ -195,5 +198,9 @@ public class SearchSampleActivity extends FragmentActivity {
 		appData.putString(SearchSampleApp.CURRENT_PATH, getCurrentPath());
 		startSearch(null, false, appData, false);
 		return true;
+	}
+	
+	public void setActionBarTitle(String title) {
+		_helper.setup(title);
 	}
 }
