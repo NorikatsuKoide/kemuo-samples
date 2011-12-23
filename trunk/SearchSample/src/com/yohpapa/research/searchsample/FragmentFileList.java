@@ -44,6 +44,7 @@ import android.widget.ListView;
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
 
 public class FragmentFileList extends ListFragment {
+	@SuppressWarnings("unused")
 	private static final String TAG = FragmentFileList.class.getSimpleName();
 	
 	private static final String ARG_PATH = "PATH";
