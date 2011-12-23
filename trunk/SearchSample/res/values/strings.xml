@@ -28,12 +28,17 @@ OF SUCH DAMAGE.
 -->
 <resources>
 
-	<string name="hello">Hello World, SearchSampleActivity!</string>
 	<string name="app_name">SearchSample</string>
 	<string name="search_hint">Input search keyword</string>
 	<string name="toast_app_not_found">Application not found</string>
+	<string name="alert_message">Your device can\'t use shortname.</string>
+	<string name="OK">OK</string>
+	
 	<string name="tag_item_content">tag_item_content</string>
+	
 	<string name="prefs_name">prefs_name</string>
 	<string name="prefs_key_name_type">prefs_key_name_type</string>
-
+	<string name="prefs_key_app_first_invoke">prefs_key_app_first_invoke</string>
+	<string name="prefs_key_shortname_available">prefs_key_shortname_available</string>
+	
 </resources>

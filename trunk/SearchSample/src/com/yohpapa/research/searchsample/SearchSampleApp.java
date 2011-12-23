@@ -32,4 +32,12 @@ import android.app.Application;
 public class SearchSampleApp extends Application {
 	public static final int NAME_TYPE_CHANGED = 0;
 	public static final String CURRENT_PATH = "CURRENT_PATH";
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		
+		// ショートネームが利用不可であればダイアログでお知らせする
+		ShortnameHelper.initialize(this);
+	}
 }
