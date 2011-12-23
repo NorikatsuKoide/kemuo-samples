@@ -36,7 +36,7 @@ OF SUCH DAMAGE.
 #include <linux/dirent.h>
 #include <android/log.h>
 
-#include "com_yohpapa_research_searchsample_FileListGenerator_FileItem.h"
+#include "com_yohpapa_research_searchsample_ShortnameHelper.h"
 
 #define VFAT_IOCTL_READDIR_BOTH  _IOR('r', 1, struct dirent [2])
 #define VFAT_IOCTL_READDIR_SHORT  _IOR('r', 2, struct dirent [2])
@@ -54,9 +54,10 @@ static int openFile(JNIEnv* env, jobject thiz, jstring longPath) {
 	return fd;
 }
 
-jbyteArray Java_com_yohpapa_research_searchsample_FileListGenerator_00024FileItem_GetShortName(
+
+jbyteArray Java_com_yohpapa_research_searchsample_ShortnameHelper_GetShortName(
 	JNIEnv* env,
-	jobject	thiz,
+	jclass	thiz,
 	jstring dirName,
 	jstring fileName) {
 

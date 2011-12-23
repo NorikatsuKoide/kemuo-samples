@@ -31,9 +31,11 @@ import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -109,6 +111,35 @@ public class SearchSampleActivity extends FragmentActivity {
 		_helper.onPostCreate(savedInstanceState);
 	}
 	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		// アプリ初回起動時のみショートネーム利用不可のダイアログを表示する
+		boolean isStarted = PreferenceManager.getAppFirstInvoked(this);
+		if(isStarted)
+			return;
+		
+		PreferenceManager.setAppFirstInvoked(this, true);
+		
+		boolean isAvailable = PreferenceManager.getShortNameAvailable(this);
+		if(isAvailable)
+			return;
+		
+		final AlertDialog dialog = new AlertDialog.Builder(this)
+											.setCancelable(false)
+											.setTitle(R.string.app_name)
+											.setMessage(R.string.alert_message)
+											.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(DialogInterface dialog, int which) {
+													dialog.dismiss();
+												}
+											})
+											.create();
+		dialog.show();
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_default, menu);

@@ -53,4 +53,46 @@ public class PreferenceManager {
 						context.getString(R.string.prefs_key_name_type),
 						true);
 	}
+	
+	public static boolean setAppFirstInvoked(Context context, boolean isStarted) {
+		SharedPreferences pref = context.getSharedPreferences(
+												context.getString(R.string.prefs_name),
+												Context.MODE_PRIVATE);
+		Editor editor = pref.edit();
+		editor.putBoolean(
+					context.getString(R.string.prefs_key_app_first_invoke),
+					isStarted);
+		
+		return editor.commit();
+	}
+	
+	public static boolean getAppFirstInvoked(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(
+												context.getString(R.string.prefs_name),
+												Context.MODE_PRIVATE);
+		return pref.getBoolean(
+						context.getString(R.string.prefs_key_app_first_invoke),
+						false);
+	}
+	
+	public static boolean setShortNameAvailable(Context context, boolean isStarted) {
+		SharedPreferences pref = context.getSharedPreferences(
+												context.getString(R.string.prefs_name),
+												Context.MODE_PRIVATE);
+		Editor editor = pref.edit();
+		editor.putBoolean(
+					context.getString(R.string.prefs_key_shortname_available),
+					isStarted);
+		
+		return editor.commit();
+	}
+	
+	public static boolean getShortNameAvailable(Context context) {
+		SharedPreferences pref = context.getSharedPreferences(
+												context.getString(R.string.prefs_name),
+												Context.MODE_PRIVATE);
+		return pref.getBoolean(
+						context.getString(R.string.prefs_key_shortname_available),
+						false);
+	}
 }

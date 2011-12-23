@@ -28,8 +28,6 @@ OF SUCH DAMAGE.
 package com.yohpapa.research.searchsample;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 
 public class FileListGenerator implements Runnable {
 	public interface Callback {
@@ -37,71 +35,20 @@ public class FileListGenerator implements Runnable {
 	}
 	
 	public static class FileItem {
-		static String SHORTNAME_ENCODE = "ISO-8859-1";
-		static {
-			System.loadLibrary("shortname");
-		}
-		
-		public static void initialize() {
-			Locale locale = Locale.getDefault();
-			if(Locale.JAPAN.equals(locale)) {
-				SHORTNAME_ENCODE = "Shift_JIS";
-			} else if(Locale.KOREA.equals(locale)) {
-				//SHORTNAME_ENCODE = "";
-			} else if(Locale.SIMPLIFIED_CHINESE.equals(locale)) {
-				SHORTNAME_ENCODE = "GBK";
-			} else if(Locale.TRADITIONAL_CHINESE.equals(locale)) {
-				SHORTNAME_ENCODE = "Big5";
-			}
-			
-			/**
-			 * ちなみにJavaで使える文字コードの一覧はこちら
-			 * http://java.sun.com/j2se/1.5.0/ja/docs/ja/guide/intl/encoding.doc.html
-			 */
-		}
-		
+
 		private final String _longName;
 		private final boolean _isDirectory;
 		private final String _shortName;
 		
-		public FileItem(String path, File file) {
+		public FileItem(File file) {
 			_longName = file.getName();
 			_isDirectory = file.isDirectory();
-			byte[] shortName = GetShortName(path, _longName);
-			if(shortName != null) {
-				_shortName = encodeShortName(shortName);
-			} else {
-				_shortName = _longName;
-			}
+			_shortName = ShortnameHelper.getShortName(file);
 		}
 		
 		public String getLongName() {return _longName;}
 		public boolean isDirectory() {return _isDirectory;}
 		public String getShortName() {return _shortName;}
-		
-		native byte[] GetShortName(String dir, String longName);
-		
-		private String encodeShortName(byte[] shortName) {
-			try {
-				
-				byte[] unicode = new String(shortName, "UTF-8").getBytes("UTF-16BE");
-				byte[] cp437 = uni2cp437(unicode);
-				return new String(cp437, SHORTNAME_ENCODE);
-				
-			} catch (UnsupportedEncodingException e) {
-				return null;
-			}
-		}
-		
-		private byte[] uni2cp437(byte[] unicode) {
-			byte[] destination = new byte[unicode.length / 2];
-			
-			for(int i = 0, j = 0; i < unicode.length; i += 2) {
-				destination[j ++] = Cp437.lookup(unicode[i], unicode[i + 1]);
-			}
-			
-			return destination;
-		}
 	}
 	
 	private final String _path;
@@ -115,8 +62,12 @@ public class FileListGenerator implements Runnable {
 	
 	@Override
 	public void run() {
-		FileItem.initialize();
 		
+		// ロケール設定が変えられる可能性があるので
+		// 必ずスレッド処理の先頭でセットアップしておくこと
+		ShortnameHelper.setup();
+		
+		// 指定されたパスのエントリを全てリストアップする
 		FileItem[] items = null;
 		try {
 			if(_path == null)
@@ -133,7 +84,7 @@ public class FileListGenerator implements Runnable {
 				if(_query != null && !_query.equals(file.getName()))
 					continue;
 					
-				items[i] = new FileItem(_path, file);
+				items[i] = new FileItem(file);
 			}
 			
 		} finally {

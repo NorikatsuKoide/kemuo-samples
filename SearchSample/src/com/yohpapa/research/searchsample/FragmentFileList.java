@@ -137,7 +137,7 @@ public class FragmentFileList extends ListFragment {
 		super.onSaveInstanceState(outState);
 		
 		outState.putString(KEY_CURRENT_PATH, _currentPath);
-		outState.putInt(KEY_LIST_POSITION, getListView().getFirstVisiblePosition());
+		outState.putInt(KEY_LIST_POSITION, _listPosition);
 	}
 
 	private final FileListGenerator.Callback _fileListCallback = new FileListGenerator.Callback() {
