@@ -65,6 +65,11 @@ public class SearchSampleActivity extends FragmentActivity {
 		_helper = new ActionBarHelper(this);
 		_handler = new Handler();
 		
+		// 端末回転時などは何もしない
+		// 全ては生成済みのFragmentに任せる♪
+		if(savedInstanceState != null)
+			return;
+		
 		Intent intent = getIntent();
 		String action = intent.getAction();
 		String path;
@@ -75,8 +80,7 @@ public class SearchSampleActivity extends FragmentActivity {
 			String select = intent.getDataString();
 			path = getPath(intent, select);
 		} else {
-			// TODO:
-			// CurrentPathを復帰する必要あり (回転時とか)
+			// 最初はルートから始める
 			path = ROOT_PATH;
 		}
 		
