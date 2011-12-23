@@ -44,12 +44,13 @@ import android.widget.ListView;
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
 
 public class FragmentFileList extends ListFragment {
-	@SuppressWarnings("unused")
 	private static final String TAG = FragmentFileList.class.getSimpleName();
 	
 	private static final String ARG_PATH = "PATH";
 	public static FragmentFileList newInstance(String path) {
 		
+		// 与えられたパスを使ってFragmentを生成する
+		// なお、パスはBundle情報に設定してFragmentに渡す
 		FragmentFileList fragment = new FragmentFileList();
 		Bundle bundle = new Bundle();
 		bundle.putString(ARG_PATH, path);
@@ -59,12 +60,12 @@ public class FragmentFileList extends ListFragment {
 	}
 
 	private static final String EXTERNAL_STORAGE = Environment.getExternalStorageDirectory().getPath();
-	private static final String KEY_CURRENT_PATH = "KEY_CURRENT_PATH";
 	private static final String KEY_LIST_POSITION = "KEY_LIST_POSITION";
 	
 	private Handler _handler = new Handler();
 	private String _currentPath = EXTERNAL_STORAGE;
 	private int _listPosition = 0;
+	private ListView _listView = null;
 	
 	private final Observer _observer = new Observer() {
 		@Override
@@ -72,6 +73,7 @@ public class FragmentFileList extends ListFragment {
 			if((Integer)data != SearchSampleApp.NAME_TYPE_CHANGED)
 				return;
 			
+			// リストアダプタに表示設定が変わったことを通知する
 			FileListAdapter adapter = (FileListAdapter)getListAdapter();
 			if(adapter == null)
 				return;
@@ -100,19 +102,41 @@ public class FragmentFileList extends ListFragment {
 	public void onResume() {
 		super.onResume();
 		
+		// ActionBarからのイベントを受信するための
+		// Observerを登録する
 		SearchSampleActivity parent = (SearchSampleActivity)getActivity();
 		parent.addObserver(_observer);
 		
+		// ActionBarのタイトルを初期化する
 		parent.setActionBarTitle(getCurrentFolderName(_currentPath));
 		
+		// リストビューを取得しておく
+		// REMARK!
+		// 本リストビューはonSaveInstanceStateでリストの表示位置を保存するために
+		// ここで取得している。本当はonSaveInstanceState内でgetListViewすれば
+		// このようなインスタンス変数は必要ないのだが、onSaveInstanceState内で
+		// getListViewを呼び出すと
+		//
+		// java.lang.IllegalStateException: Content view not yet created
+		//
+		// などという意味不明な例外が発生してしまう。
+		// なので仕方なくここで取得している。
+		_listView = getListView();
+		if(_listView == null)
+			return;
+		
+		// ファイルリスト生成を開始する
 		FileListGenerator.start(_currentPath, null, _fileListCallback);
 	}
 	
 	private String getCurrentFolderName(String fullPath) {
 		
+		// 外部メモリのルートの場合はnullを返す
+		// nullをタイトルに設定するとアプリ名を表示するからだ
 		if(EXTERNAL_STORAGE.equals(fullPath))
 			return null;
 		
+		// カレントフォルダ名を作って返す
 		int lastIndex = fullPath.lastIndexOf(File.separator);
 		if(lastIndex == -1)
 			return getString(R.string.app_name);
@@ -124,19 +148,33 @@ public class FragmentFileList extends ListFragment {
 	public void onPause() {
 		super.onPause();
 		
+		// とりあえずスレッドを停止しておく
 		FileListGenerator.cancel();
 		
+		// ActionBarイベント受信オブザーバを解除する
 		SearchSampleActivity parent = (SearchSampleActivity)getActivity();
 		parent.deleteObserver(_observer);
 		
-		_listPosition = getListView().getFirstVisiblePosition();
+		// リストの表示位置を退避しておく
+		_listPosition = _listView.getFirstVisiblePosition();
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		
-		outState.putString(KEY_CURRENT_PATH, _currentPath);
+		if(_listView != null) {
+
+			// REMARK
+			// ここでgetListViewすると意味不明な例外が発生してしまうため、
+			// onActivityCreated内で取得していたListViewオブジェクトを
+			// 使って表示位置を取得している
+			_listPosition = _listView.getFirstVisiblePosition();
+
+		}
+		
+		// Fragmentの表示状態を保存する
+		// この状態を復帰するのはonCreate内である
 		outState.putInt(KEY_LIST_POSITION, _listPosition);
 	}
 
@@ -146,6 +184,9 @@ public class FragmentFileList extends ListFragment {
 			_handler.post(new Runnable() {
 				@Override
 				public void run() {
+					
+					// 取得したファイルリストをアダプタに設定する
+					// リストの表示位置を復帰するのを忘れずに
 					setListAdapter(
 							new FileListAdapter(
 									getActivity(),
@@ -160,18 +201,35 @@ public class FragmentFileList extends ListFragment {
 	@Override
 	public void onListItemClick(ListView list, View view, int position, long id) {
 		
+		// クリックされた項目に紐づけた情報を取得する
 		FileItem item = (FileItem)view.getTag(FileListAdapter.KEY_ITEM_CONTENT);
 		if(item == null)
 			return;
 		
+		// クリックされた項目のフルパスを生成する
 		String path = _currentPath + File.separator + item.getLongName();
 		
+		// もしファイルであれば暗黙的Intentを飛ばす
 		if(!item.isDirectory()) {
 			ActivityUtils.startActivity(
 						getActivity(), path, Intent.ACTION_VIEW);
 			return;
 		}
 		
+		// FragmentがStackに積まれる前にリスト位置を退避しておく
+		// REMARK!
+		// Fragmentは切り替えるとFragmentのStackに積まれていくが
+		// その状態で端末の回転などが発生するとStackに積まれたFragmentの
+		// onSaveInstanceState呼び出しが発生する。
+		// その時はどうもUI部品が構築されていない模様で、onResume()内で
+		// getListView()しても、nullを返すみたい。
+		// そうするとgetListView().getFirstVisiblePosition()が使えない。
+		// うぅうぅ。。。
+		// そのためonSaveInstanceState内でリスト位置を保存するには
+		// FragmentがStackに積まれる際にリスト位置を保持しておく必要があるのだ。
+		_listPosition = _listView.getFirstVisiblePosition();
+		
+		// ディレクトリであれば新たなFragmentを作って遷移する
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.setCustomAnimations(
 				R.anim.fragment_slide_right_enter,
