@@ -27,7 +27,10 @@ OF SUCH DAMAGE.
 */
 package com.yohpapa.research.searchsample;
 
+import java.io.File;
+
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,14 +42,21 @@ public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
 	
 	public static final int KEY_ITEM_CONTENT = R.string.tag_item_content;
 	
+	private final Context _context;
 	private final LayoutInflater _inflater;
+	private final String _directory;
 	private boolean _isShort = true;
 	
 	public FileListAdapter(
-			Context context, FileListGenerator.FileItem[] objects, boolean isShort) {
+				Context context,
+				FileListGenerator.FileItem[] objects,
+				String directory,
+				boolean isShort) {
 		super(context, R.layout.listitem_file, objects);
 		
+		_context = context;
 		_inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		_directory = directory;
 		_isShort = isShort;
 	}
 
@@ -90,10 +100,21 @@ public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
 		if(iconEntry == null)
 			return view;
 		
+		iconEntry.setTag(position);
+		
 		if(item.isDirectory()) {
 			iconEntry.setImageResource(R.drawable.folder_icon);
 		} else {
-			iconEntry.setImageResource(R.drawable.file_icon);
+			Drawable icon = IconManager.getIconFromCache(item.getLongName());
+			if(icon != null) {
+				iconEntry.setImageDrawable(icon);
+			} else {
+				iconEntry.setImageDrawable(null);
+				IconManager.getIconAsync(
+								_context,
+								iconEntry,
+								_directory + File.separator + item.getLongName());
+			}
 		}
 		
 		return view;

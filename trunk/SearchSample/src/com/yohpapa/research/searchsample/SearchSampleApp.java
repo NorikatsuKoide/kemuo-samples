@@ -37,7 +37,11 @@ public class SearchSampleApp extends Application {
 	public void onCreate() {
 		super.onCreate();
 		
-		// ショートネームが利用不可であればダイアログでお知らせする
+		// ショートネームの利用不可をテストする
+		// ただし初回起動時のみ
 		ShortnameHelper.initialize(this);
+		
+		// ファイルアイコンキャッシュを初期化する
+		IconManager.initialize(this);
 	}
 }
