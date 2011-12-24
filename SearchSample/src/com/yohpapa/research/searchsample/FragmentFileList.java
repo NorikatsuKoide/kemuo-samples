@@ -192,6 +192,7 @@ public class FragmentFileList extends ListFragment {
 							new FileListAdapter(
 									getActivity(),
 									files,
+									_currentPath,
 									PreferenceManager.getNameType(getActivity())));
 					setSelection(_listPosition);
 				}
