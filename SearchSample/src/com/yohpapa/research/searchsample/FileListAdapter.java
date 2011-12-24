@@ -32,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
@@ -52,18 +53,25 @@ public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
+		// コンテンツを設定するViewがない場合は最初に初期化しておく
 		View view = convertView;
 		if(view == null) {
 			view = _inflater.inflate(R.layout.listitem_file, null);
 		}
 
+		// リスト位置が持っているデータよりも多い場合は何もしない (出来ない)
 		if(position >= getCount())
 			return view;
 		
+		// リスト位置に相当するエントリ情報を抽出する
 		final FileListGenerator.FileItem item = getItem(position);
 		if(item == null)
 			return view;
 
+		// クリック時に参照するためタグに対応するエントリ情報を設定しておく
+		view.setTag(KEY_ITEM_CONTENT, item);
+		
+		// エントリ名を設定する
 		TextView nameEntry = (TextView)view.findViewById(R.id.entry_name);
 		if(nameEntry == null)
 			return view;
@@ -77,7 +85,16 @@ public class FileListAdapter extends ArrayAdapter<FileListGenerator.FileItem> {
 		
 		nameEntry.setText(name);
 		
-		view.setTag(KEY_ITEM_CONTENT, item);
+		// エントリアイコンを設定する
+		ImageView iconEntry = (ImageView)view.findViewById(R.id.entry_icon);
+		if(iconEntry == null)
+			return view;
+		
+		if(item.isDirectory()) {
+			iconEntry.setImageResource(R.drawable.folder_icon);
+		} else {
+			iconEntry.setImageResource(R.drawable.file_icon);
+		}
 		
 		return view;
 	}
