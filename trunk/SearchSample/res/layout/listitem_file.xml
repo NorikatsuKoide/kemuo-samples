@@ -34,13 +34,21 @@ OF SUCH DAMAGE.
 	android:paddingBottom="15dp"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:orientation="vertical" >
+	android:orientation="horizontal" >
 	
+	<ImageView android:id="@+id/entry_icon"
+		android:src="@drawable/folder_icon"
+		android:layout_gravity="center_vertical"
+		android:layout_width="@dimen/icon_size"
+		android:layout_height="@dimen/icon_size" />
+    
     <TextView android:id="@+id/entry_name"
 		android:text="hogehoge"
-		android:textSize="20sp"
+		android:textSize="@dimen/text_size_medium"
 		android:singleLine="true"
 		android:ellipsize="marquee"
+		android:layout_marginLeft="@dimen/entry_gap_length"
+		android:layout_gravity="center_vertical"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"/>
     

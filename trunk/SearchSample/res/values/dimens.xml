@@ -27,9 +27,13 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 -->
 <resources>
+    
     <dimen name="actionbar_height">45dp</dimen>
     <dimen name="actionbar_separator_width">2px</dimen>
     <dimen name="actionbar_button_width">45dp</dimen>
     
     <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="icon_size">30dp</dimen>
+    <dimen name="entry_gap_length">10dp</dimen>
+    
 </resources>
