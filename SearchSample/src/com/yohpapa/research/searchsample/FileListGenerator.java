@@ -68,7 +68,7 @@ public class FileListGenerator implements Runnable {
 		ShortnameHelper.setup();
 		
 		// 指定されたパスのエントリを全てリストアップする
-		FileItem[] items = null;
+		FileItem[] items = new FileItem[0];
 		try {
 			if(_path == null)
 				return;
@@ -78,6 +78,9 @@ public class FileListGenerator implements Runnable {
 				return;
 			
 			File[] files = file.listFiles();
+			if(files == null)
+				return;
+			
 			items = new FileItem[files.length];
 			for(int i = 0; i < files.length; i ++) {
 				file = files[i];
