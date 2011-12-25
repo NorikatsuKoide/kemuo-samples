@@ -109,7 +109,7 @@ public class FragmentFileList extends ListFragment {
 		parent.addObserver(_observer);
 		
 		// ActionBarのタイトルを初期化する
-		parent.setActionBarTitle(getCurrentFolderName(_currentPath));
+		parent.setActionBarTitle(getCurrentFolderName(_currentPath), _titleListener);
 		
 		// リストビューを取得しておく
 		// REMARK!
@@ -144,6 +144,14 @@ public class FragmentFileList extends ListFragment {
 		
 		return fullPath.substring(lastIndex + 1);
 	}
+	
+	private final View.OnClickListener _titleListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View view) {
+			// タイトルがクリックされたらリストの先頭に戻す
+			setSelection(0);
+		}
+	};
 
 	@Override
 	public void onPause() {
