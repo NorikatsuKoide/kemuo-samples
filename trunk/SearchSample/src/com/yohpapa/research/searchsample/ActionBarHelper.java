@@ -50,27 +50,46 @@ public class ActionBarHelper {
 	private Activity _activity = null;
 	private ViewGroup _actionBar = null;
 	private TextView _titleView = null;
+	private View.OnClickListener _titleClickListener = null;
 	
 	public ActionBarHelper(Activity activity) {
+		
 		_activity = activity;
 		_actionBar = getActionBar();
-		
+
+		// アクションバーのタイトルを初期化
 		LinearLayout.LayoutParams layoutParams =
 				new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.FILL_PARENT);
 		layoutParams.weight = 1;
 		
 		_titleView = new TextView(_activity, null, R.attr.actionbarTextStyle);
 		_titleView.setLayoutParams(layoutParams);
+		_titleView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(_titleClickListener == null)
+					return;
+				
+				_titleClickListener.onClick(v);
+			}
+		});
 		
+		// タイトルをアクションバーに登録しておく
 		_actionBar.addView(_titleView);
 	}
 	
-	public void setup(String title) {
+	public void setup(String title, View.OnClickListener listener) {
+		
+		// タイトルをアクションバーに設定する
+		// nullの場合はアプリ名を表示する
 		if(title == null) {
 			_titleView.setText(R.string.app_name);
 		} else {
 			_titleView.setText(title);
 		}
+		
+		// タイトルのクリックリスナを登録しておく
+		_titleClickListener = listener;
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

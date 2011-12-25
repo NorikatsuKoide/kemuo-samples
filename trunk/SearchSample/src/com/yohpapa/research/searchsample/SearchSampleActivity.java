@@ -46,6 +46,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
 
@@ -70,6 +71,11 @@ public class SearchSampleActivity extends FragmentActivity {
 		if(savedInstanceState != null)
 			return;
 		
+		// 起動Intentから表示すべきパスを特定する
+		// 受信する可能性のあるIntentは以下の通り
+		// 1. ACTION_SEARCH (検索ダイアログ確定)
+		// 2. ACTION_VIEW (検索候補選択)
+		// 3. ACTION_MAIN (起動)
 		Intent intent = getIntent();
 		String action = intent.getAction();
 		String path;
@@ -84,18 +90,22 @@ public class SearchSampleActivity extends FragmentActivity {
 			path = ROOT_PATH;
 		}
 		
+		// もし存在しないパスであれば即終了
 		File file = new File(path);
 		if(!file.exists()) {
 			finish();
 			return;
 		}
 		
+		// もしファイルだった場合は暗黙的Intentを投げる
 		if(file.isFile()) {
 			ActivityUtils.startActivityAndFinish(
 					this, file.getAbsolutePath(), Intent.ACTION_VIEW);
 			return;
 		}
 		
+		// フォルダだった場合はFragmentを起動して
+		// フォルダ内のエントリリストを表示する
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		Fragment fragment = FragmentFileList.newInstance(path);
 		ft.add(R.id.fragment_filelist, fragment);
@@ -103,6 +113,7 @@ public class SearchSampleActivity extends FragmentActivity {
 	}
 	
 	private String getPath(Intent intent, String fileName) {
+		// 受信したIntentからフルパスを抽出する
 		Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
 		String path = appData.getString(SearchSampleApp.CURRENT_PATH);
 		return path + File.separator + fileName;
@@ -111,7 +122,9 @@ public class SearchSampleActivity extends FragmentActivity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		_helper.setup(null);
+		
+		// ActionBarHelperを使ってUIを構築する
+		_helper.setup(null, null);
 		_helper.onPostCreate(savedInstanceState);
 	}
 	
@@ -172,7 +185,6 @@ public class SearchSampleActivity extends FragmentActivity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		
 		// ヘルパーが処理したら親にはイベントを渡さない
 		boolean result = _helper.onKeyDown(keyCode, event);
 		if(result)
@@ -205,6 +217,8 @@ public class SearchSampleActivity extends FragmentActivity {
 				_handler.post(new Runnable() {
 					@Override
 					public void run() {
+						// ファイルリストを検索サジェスチョン用コンテンツプロバイダに登録する
+						// エントリの数が多いと時間がかかるのが課題・・・
 						ContentResolver resolver = getContentResolver();
 						resolver.delete(CustomSuggestionsColumns.CONTENT_URI, null, null);
 						for(FileItem file : files) {
@@ -223,19 +237,21 @@ public class SearchSampleActivity extends FragmentActivity {
 	}
 	
 	private String getCurrentPath() {
+		// 現在有効な (Foreground) Fragmentの表示パスを取得する
 		FragmentFileList fragment = (FragmentFileList)getSupportFragmentManager().findFragmentById(R.id.fragment_filelist);
 		return fragment.getCurrentPath();
 	}
 	
 	@Override
 	public boolean onSearchRequested() {
+		// 現在表示中のパスを引数に設定してから検索ダイアログを起動する
 		Bundle appData = new Bundle();
 		appData.putString(SearchSampleApp.CURRENT_PATH, getCurrentPath());
 		startSearch(null, false, appData, false);
 		return true;
 	}
 	
-	public void setActionBarTitle(String title) {
-		_helper.setup(title);
+	public void setActionBarTitle(String title, View.OnClickListener listener) {
+		_helper.setup(title, listener);
 	}
 }
