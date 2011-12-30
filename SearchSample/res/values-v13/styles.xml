@@ -26,6 +26,11 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<LinearLayout style="@style/ActionBar" />
-</merge>
+<resources>
+    
+ 	<!-- ActionBarのスタイル -->
+	<style name="ActionBarTitle" parent="android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+		<item name="android:textColor">@color/actionbar_title_color</item>
+	</style>
+
+</resources>

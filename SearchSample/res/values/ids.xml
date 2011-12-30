@@ -27,6 +27,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 -->
 <resources>
-	<item type="id" name="actionbar" />
-	<item type="id" name="actionbar_text" />
+    <item type="id" name="actionbar_compat" />
+	<item type="id" name="actionbar_compat_title" />
 </resources>

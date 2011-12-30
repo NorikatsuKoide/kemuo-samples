@@ -33,6 +33,7 @@ OF SUCH DAMAGE.
 	<string name="toast_app_not_found">Application not found</string>
 	<string name="alert_message">Your device can\'t use shortname.</string>
 	<string name="OK">OK</string>
+	<string name="actionbar_home_title">HOME</string>
 	
 	<string name="tag_item_content">tag_item_content</string>
 	

@@ -26,23 +26,24 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
     
-    <!-- 押してる時 -->
-	<item android:drawable="@drawable/btn_bg_pressed"
-		android:state_focused="true"
-		android:state_pressed="true" />
-	<item android:drawable="@drawable/btn_bg_pressed"
-		android:state_focused="false"
-		android:state_pressed="true" />
-
-	<!-- フォーカスが当たっている時 -->
-	<item android:drawable="@drawable/btn_bg_selected"
-		android:state_focused="true" />
+    <!-- アプリケーションのテーマ (APIレベル11以上) -->
+	<style name="AppTheme" parent="android:style/Theme.Holo.Light">
+ 		<item name="android:actionBarStyle">@style/ActionBar</item>
+ 		<item name="android:windowContentOverlay">@drawable/actionbar_shadow</item>
+ 	</style>
+ 	
+ 	<!-- ActionBarのスタイル -->
+ 	<style name="ActionBar" parent="android:style/Widget.Holo.Light.ActionBar">
+		<item name="android:background">#eee</item>
+		<item name="android:titleTextStyle">@style/ActionBarTitle</item>
+		<item name="android:icon">@drawable/ic_home</item>
+	</style>
 	
-	<!-- その他 -->
-	<item android:drawable="@android:color/transparent"
-		android:state_focused="false"
-		android:state_pressed="false" />
+	<!-- ActionBarタイトルスタイル -->
+	<style name="ActionBarTitle">
+		<item name="android:textColor">@color/actionbar_title_color</item>
+	</style>
 	
-</selector>
+</resources>

@@ -31,9 +31,6 @@ OF SUCH DAMAGE.
 	android:layout_height="fill_parent"
 	android:orientation="vertical" >
 
-    <!-- アクションバー -->
-	<include layout="@layout/actionbar" />
-	
 	<!-- リスト表示Fragment -->
 	<FrameLayout android:id="@+id/fragment_filelist"
 	    android:layout_weight="1"

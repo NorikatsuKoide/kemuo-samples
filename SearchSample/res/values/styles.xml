@@ -29,58 +29,52 @@ OF SUCH DAMAGE.
 <resources>
     
 	<!-- アプリケーションのテーマ -->
-	<style name="Theme" parent="android:style/Theme" />
-	<style name="Theme.ActionBar" parent="android:style/Theme.Light">
-		<item name="android:windowNoTitle">true</item>			<!-- タイトルバー消す -->
-		<item name="android:windowContentOverlay">@null</item>	<!-- タイトルバーの影消す -->
+	<style name="AppTheme" parent="android:style/Theme.Light">
+		<item name="android:windowTitleSize">@dimen/actionbar_compat_height</item>
+		<item name="android:windowContentOverlay">@drawable/actionbar_shadow</item>
+		<item name="android:windowTitleBackgroundStyle">@style/ActionBarCompat</item>
 		
-		<!-- attrで参照するために再定義 -->
-		<item name="actionbarSeparatorStyle">@style/ActionBarSeparator</item>
-		<item name="actionbarButtonStyle">@style/ActionBarButton</item>
-		<item name="actionbarTextStyle">@style/ActionBarText</item>
-	</style>
-	    
-    <!-- Actionbarのスタイル -->
-	<style name="ActionBar">
-		<item name="android:id">@id/actionbar</item>
-		<item name="android:layout_width">fill_parent</item>
-		<item name="android:layout_height">@dimen/actionbar_height</item>
-		<item name="android:orientation">horizontal</item>
-		<item name="android:background">@drawable/actionbar_background</item>
+		<!-- for programmatic instantiation -->
+		<item name="actionbarCompatTitleStyle">@style/ActionBarCompatTitle</item>
+		<item name="actionbarCompatItemStyle">@style/ActionBarCompatItem</item>
+		<item name="actionbarCompatItemHomeStyle">@style/ActionBarCompatHomeItem</item>
 	</style>
 	
-	<!-- ActionBar内の区切りスタイル -->
-	<style name="ActionBarSeparator">
-		<item name="android:layout_width">@dimen/actionbar_separator_width</item>
-		<item name="android:layout_height">fill_parent</item>
-		<item name="android:background">@drawable/actionbar_separator</item>
+	<!-- ActionBarの背景スタイル -->
+	<style name="ActionBarCompat">
+		<item name="android:background">#eee</item>
 	</style>
 	
-	<!-- ActionBar内のボタンスタイル -->
-	<style name="ActionBarButton">
-		<item name="android:layout_width">@dimen/actionbar_button_width</item>
-		<item name="android:layout_height">fill_parent</item>
+	<!-- ActionBar上の部品共通スタイル -->
+	<style name="ActionBarCompatItemBase">
+		<!-- layout_width/height must be set in code -->
 		<item name="android:scaleType">center</item>
-		<item name="android:background">@drawable/actionbar_button_background</item>
+		<item name="android:background">@drawable/actionbar_compat_item</item>
 	</style>
 	
-	<!-- ActionBar内のテキストスタイル -->
-	<style name="ActionBarText">
-		<item name="android:id">@id/actionbar_text</item>
-		<item name="android:layout_width">0dp</item>
-		<item name="android:layout_height">fill_parent</item>
-		<item name="android:layout_weight">1</item>
+	<!-- ActionBarタイトル共通スタイル -->
+	<style name="ActionBarCompatTitleBase">
+		<item name="android:id">@id/actionbar_compat_title</item>
+		<!-- layout_width/height/weight must be set in code -->
 		<item name="android:gravity">center_vertical</item>
-		<item name="android:textSize">@dimen/text_size_medium</item>
-		<item name="android:paddingLeft">12dp</item>
-		<item name="android:paddingRight">12dp</item>
-		<item name="android:textStyle">bold</item>
-		<item name="android:textColor">@color/actionbar_text</item>
-		<item name="android:shadowColor">#fff</item>
-		<item name="android:shadowDx">0</item>
-		<item name="android:shadowDy">1</item>
-		<item name="android:shadowRadius">0.00001</item>
+		<item name="android:textSize">18sp</item>
+		<item name="android:paddingLeft">6dp</item>
+		<item name="android:paddingRight">6dp</item>
 		<item name="android:singleLine">true</item>
-		<item name="android:ellipsize">end</item>
+		<item name="android:ellipsize">marquee</item>
 	</style>
+	
+	<!-- ActionBarタイトルスタイル -->
+	<style name="ActionBarCompatTitle" parent="style/ActionBarCompatTitleBase">
+		<item name="android:textColor">@color/actionbar_title_color</item>
+	</style>
+	
+	<!-- ActionBarボタンスタイル -->
+	<style name="ActionBarCompatItem" parent="style/ActionBarCompatItemBase">
+	</style>
+	
+	<!-- ActionBar HOMEボタンスタイル -->
+	<style name="ActionBarCompatHomeItem" parent="style/ActionBarCompatItemBase">
+	</style>
+	
 </resources>

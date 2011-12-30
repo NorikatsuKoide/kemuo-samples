@@ -25,7 +25,7 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
-package com.yohpapa.research.searchsample;
+package com.yohpapa.tools.ui;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
