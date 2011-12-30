@@ -45,7 +45,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
 import com.yohpapa.tools.ui.ActionBarActivity;
@@ -159,8 +158,7 @@ public class SearchSampleActivity extends ActionBarActivity {
 		boolean result = true;
 		switch(item.getItemId()) {
 		case android.R.id.home:
-			// TODO: 未実装
-			Toast.makeText(this, "The HOME button tapped", Toast.LENGTH_SHORT).show();
+			onOptionMenuHomeSelected();
 			break;
 			
 		case R.id.menu_search:
@@ -195,6 +193,16 @@ public class SearchSampleActivity extends ActionBarActivity {
 		_observable.deleteObserver(observer);
 	}
 
+	private void onOptionMenuHomeSelected() {
+		
+		// 参考サイト
+		// http://www.techdoctranslator.com/android/guide/ui/actionbar
+		
+		Intent intent = new Intent(this, SearchSampleActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+	}
+	
 	private void onOptionMenuSearchSelected() {
 		String path = getCurrentPath();
 		FileListGenerator.start(path, null, new FileListGenerator.Callback() {

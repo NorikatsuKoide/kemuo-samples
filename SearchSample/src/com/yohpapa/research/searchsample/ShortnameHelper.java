@@ -106,6 +106,9 @@ public class ShortnameHelper {
 		String directoryName = file.getParent();
 		String fileName = file.getName();
 		
+		if(!isAvailable())
+			return fileName;
+		
 		// ネイティブAPIを使ってショートネーム取得を試みる
 		byte[] shortName = GetShortName(directoryName, fileName);
 		if(shortName == null)

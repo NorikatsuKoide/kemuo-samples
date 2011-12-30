@@ -70,8 +70,8 @@ public class ActionBarActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = false;
-		result  = _actionBarHelper.onCreateOptionMenu(menu);
 		result |= super.onCreateOptionsMenu(menu);
+		result |= _actionBarHelper.onCreateOptionMenu(menu);
 		return result;
 	}
 
