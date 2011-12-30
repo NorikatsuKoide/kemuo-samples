@@ -1,5 +1,6 @@
 package com.yohpapa.tools.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,13 +19,7 @@ public class ActionBarHelperHoneyComb extends ActionBarHelper {
 	public void onCreate(Bundle savedInstanceState) {}
 
 	@Override
-	public void onPostCreate(Bundle savedInstanceState) {
-		View view = _activity.findViewById(android.R.id.title);
-		if(view == null)
-			return;
-		
-		view.setOnClickListener(_titleListener);
-	}
+	public void onPostCreate(Bundle savedInstanceState) {}
 
 	@Override
 	public boolean onCreateOptionMenu(Menu menu) {
@@ -42,6 +37,24 @@ public class ActionBarHelperHoneyComb extends ActionBarHelper {
 
 	@Override
 	public void setItemVisible(int id, boolean visible) {
+		
+		// HOMEボタンは専用のメソッドがあるので特別扱いとする
+		if(id == android.R.id.home) {
+			ActionBar actionBar = _activity.getActionBar();
+			if(actionBar == null)
+				return;
+			
+			actionBar.setHomeButtonEnabled(visible);
+			actionBar.setDisplayShowHomeEnabled(visible);
+			return;
+		}
+		
+		// この方法では本メソッドが呼ばれる前にonOptionMenuCreateが呼ばれていないとダメ
+		// ただしそれは最初の画面だけの制約であり、それ以降は問題なし
+		if(_menu == null)
+			return;
+		
+		// 指定されたメニューの表示／非表示を切り替える
 		final MenuItem item = _menu.findItem(id);
 		if(item == null)
 			return;
