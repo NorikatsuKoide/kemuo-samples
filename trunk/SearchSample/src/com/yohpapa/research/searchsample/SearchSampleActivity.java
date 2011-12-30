@@ -41,21 +41,20 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.yohpapa.research.searchsample.FileListGenerator.FileItem;
+import com.yohpapa.tools.ui.ActionBarActivity;
 
-public class SearchSampleActivity extends FragmentActivity {
+public class SearchSampleActivity extends ActionBarActivity {
 	@SuppressWarnings("unused")
 	private static final String TAG = SearchSampleActivity.class.getSimpleName();
 	private static final String ROOT_PATH = Environment.getExternalStorageDirectory().getPath();
 
-	private ActionBarHelper _helper = null;
 	private Handler _handler = null;
 	
 	@Override
@@ -63,7 +62,6 @@ public class SearchSampleActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-		_helper = new ActionBarHelper(this);
 		_handler = new Handler();
 		
 		// 端末回転時などは何もしない
@@ -87,7 +85,9 @@ public class SearchSampleActivity extends FragmentActivity {
 			path = getPath(intent, select);
 		} else {
 			// 最初はルートから始める
+			// ただしタイトルはアプリ名とする
 			path = ROOT_PATH;
+			setTitle(R.string.app_name);
 		}
 		
 		// もし存在しないパスであれば即終了
@@ -117,15 +117,6 @@ public class SearchSampleActivity extends FragmentActivity {
 		Bundle appData = intent.getBundleExtra(SearchManager.APP_DATA);
 		String path = appData.getString(SearchSampleApp.CURRENT_PATH);
 		return path + File.separator + fileName;
-	}
-	
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		
-		// ActionBarHelperを使ってUIを構築する
-		_helper.setup(null, null);
-		_helper.onPostCreate(savedInstanceState);
 	}
 	
 	@Override
@@ -167,6 +158,11 @@ public class SearchSampleActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean result = true;
 		switch(item.getItemId()) {
+		case android.R.id.home:
+			// TODO: 未実装
+			Toast.makeText(this, "The HOME button tapped", Toast.LENGTH_SHORT).show();
+			break;
+			
 		case R.id.menu_search:
 			onOptionMenuSearchSelected();
 			break;
@@ -183,16 +179,6 @@ public class SearchSampleActivity extends FragmentActivity {
 		return result;
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// ヘルパーが処理したら親にはイベントを渡さない
-		boolean result = _helper.onKeyDown(keyCode, event);
-		if(result)
-			return true;
-		
-		return super.onKeyDown(keyCode, event);
-	}
-	
 	private final Observable _observable = new Observable() {
 		@Override
 		public void notifyObservers(Object data) {
@@ -252,6 +238,16 @@ public class SearchSampleActivity extends FragmentActivity {
 	}
 	
 	public void setActionBarTitle(String title, View.OnClickListener listener) {
-		_helper.setup(title, listener);
+		boolean homeVisible = true;
+		
+		// タイトルが無効な場合はアプリ名とする
+		if(title == null) {
+			title = getString(R.string.app_name);
+			homeVisible = false;
+		}
+		
+		setTitle(title);
+		setItemVisibility(android.R.id.home, homeVisible);
+		setOnTitleListener(listener);
 	}
 }

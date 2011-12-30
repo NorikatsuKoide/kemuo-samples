@@ -31,7 +31,7 @@ OF SUCH DAMAGE.
 	android:versionCode="1"
 	android:versionName="1.0" >
 
-	<uses-sdk android:minSdkVersion="4" />
+	<uses-sdk android:minSdkVersion="3" />
 	
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	
@@ -43,9 +43,9 @@ OF SUCH DAMAGE.
 		android:debuggable="false">
 	    
  		<activity
-			android:label="@string/app_name"
+			android:label=""
 			android:name=".SearchSampleActivity"
-			android:theme="@style/Theme.ActionBar" >
+			android:theme="@style/AppTheme" >
 			
 			<!-- 先頭起動オプション -->
 			<intent-filter >
