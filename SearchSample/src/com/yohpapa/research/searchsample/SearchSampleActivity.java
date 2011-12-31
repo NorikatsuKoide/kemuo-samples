@@ -37,6 +37,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -170,6 +171,10 @@ public class SearchSampleActivity extends ActionBarActivity {
 			_observable.notifyObservers(SearchSampleApp.NAME_TYPE_CHANGED);
 			break;
 			
+		case R.id.menu_about:
+			onOptionMenuAboutSelected();
+			break;
+			
 		default:
 			result = super.onOptionsItemSelected(item);
 			break;
@@ -257,5 +262,32 @@ public class SearchSampleActivity extends ActionBarActivity {
 		setTitle(title);
 		setItemVisibility(android.R.id.home, homeVisible);
 		setOnTitleListener(listener);
+	}
+	
+	private void onOptionMenuAboutSelected() {
+		
+		// アプリのバージョン取得
+		String version = "";
+		try {
+			version = getPackageManager().getPackageInfo(getPackageName(), 1).versionName;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		// ダイアログのレイアウト生成
+		
+		// ダイアログ生成
+		// TODO: ちゃんと情報を表示すること
+		final AlertDialog dialog = new AlertDialog.Builder(this)
+			.setTitle(getString(R.string.app_name) + " " + version)
+			.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}})
+			.create();
+		
+		// ダイアログ表示
+		dialog.show();
 	}
 }

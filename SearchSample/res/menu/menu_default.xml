@@ -29,13 +29,20 @@ OF SUCH DAMAGE.
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/menu_search"
 		android:icon="@drawable/ic_title_search"
-		android:title="earch"
+		android:title="Search"
 		android:orderInCategory="1"
 		android:showAsAction="ifRoom" />
 	
 	<item android:id="@+id/menu_setup"
 		android:icon="@drawable/ic_title_setup"
-		android:title="setup"
+		android:title="Setup"
 		android:orderInCategory="1"
 		android:showAsAction="ifRoom" />
+	
+	<item android:id="@+id/menu_about"
+	    android:icon="@drawable/ic_about"
+	    android:title="About"
+	    android:orderInCategory="2"
+	    android:showAsAction="collapseActionView" />
+	
 </menu>
