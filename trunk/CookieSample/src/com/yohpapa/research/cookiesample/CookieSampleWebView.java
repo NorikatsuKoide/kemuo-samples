@@ -1,16 +1,16 @@
 package com.yohpapa.research.cookiesample;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class CookieSampleWebView extends Activity {
+import com.yohpapa.tools.ui.ActionBarActivity;
+
+public class CookieSampleWebView extends ActionBarActivity {
 	private static final String TAG = CookieSampleWebView.class.getSimpleName();
 
 	private static final String LOGIN_URL = "https://accounts.google.com/ServiceLogin?hl=ja";
@@ -21,7 +21,6 @@ public class CookieSampleWebView extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.login_form);
 		
 		_webView = (WebView)findViewById(R.id.login_webview);

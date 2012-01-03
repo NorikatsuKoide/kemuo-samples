@@ -14,7 +14,7 @@
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
 		android:name="CookieSampleApp"
-		android:theme="@android:style/Theme.Light"
+		android:theme="@style/AppTheme"
 		android:enabled="true" android:debuggable="false">
 		
 		<activity
