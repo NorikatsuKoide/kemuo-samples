@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="app_name">Cookie Viewer</string>
+	<string name="error_message">Please login!</string>
+	<string name="menu_login">LOGIN</string>
+
+</resources>
