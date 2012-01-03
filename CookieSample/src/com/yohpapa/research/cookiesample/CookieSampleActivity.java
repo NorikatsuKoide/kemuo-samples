@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -81,7 +80,7 @@ public class CookieSampleActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		boolean result = false;
+		boolean result = true;
 		int itemId = item.getItemId();
 		switch(itemId) {
 		case R.id.menu_login:
