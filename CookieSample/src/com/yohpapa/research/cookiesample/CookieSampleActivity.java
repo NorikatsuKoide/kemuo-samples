@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,7 +15,9 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class CookieSampleActivity extends Activity {
+import com.yohpapa.tools.ui.ActionBarActivity;
+
+public class CookieSampleActivity extends ActionBarActivity {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = CookieSampleActivity.class.getSimpleName();
@@ -24,7 +25,6 @@ public class CookieSampleActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.main);
 	}
 
