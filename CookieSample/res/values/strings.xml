@@ -4,5 +4,6 @@
 	<string name="app_name">Cookie Viewer</string>
 	<string name="error_message">Please login!</string>
 	<string name="menu_login">LOGIN</string>
+	<string name="menu_rss">RSS</string>
 
 </resources>
