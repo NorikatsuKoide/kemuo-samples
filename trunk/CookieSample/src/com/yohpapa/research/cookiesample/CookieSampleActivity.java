@@ -81,11 +81,23 @@ public class CookieSampleActivity extends ActionBarActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean result = true;
+		Intent intent;
 		int itemId = item.getItemId();
 		switch(itemId) {
 		case R.id.menu_login:
-			Intent intent = new Intent(CookieSampleActivity.this, CookieSampleWebView.class);
+			intent = new Intent(this, CookieSampleWebView.class);
 			startActivityForResult(intent, 0);
+			break;
+			
+		case R.id.menu_rss:
+			final String cookie = ((CookieSampleApp)getApplication()).restoreCookie();
+			if(cookie == null) {
+				Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
+				return result;
+			}
+			
+			intent = new Intent(this, CookieSampleRssView.class);
+			startActivity(intent);
 			break;
 			
 		default:

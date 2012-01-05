@@ -28,6 +28,9 @@
 		<activity
 		    android:label="Login"
 		    android:name=".CookieSampleWebView" />
+		<activity
+			android:label="RSS"
+			android:name=".CookieSampleRssView" />
 		
 	</application>
 

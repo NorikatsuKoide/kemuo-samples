@@ -6,5 +6,11 @@
 		android:icon="@drawable/ic_login"
 		android:orderInCategory="1"
 		android:showAsAction="always" />
+	
+	<item android:id="@+id/menu_rss"
+		android:title="@string/menu_rss"
+		android:icon="@drawable/ic_rss"
+		android:orderInCategory="1"
+		android:showAsAction="always" />
 
 </menu>
