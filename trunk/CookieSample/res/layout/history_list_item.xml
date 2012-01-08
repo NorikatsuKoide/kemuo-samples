@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="10dp"
+	android:orientation="horizontal" >
+	
+	<ImageView android:id="@+id/history_type_icon"
+		android:src="@drawable/ic_query"
+		android:contentDescription="hogehoge"
+		android:layout_gravity="center_vertical"
+		android:layout_width="@dimen/icon_size"
+		android:layout_height="@dimen/icon_size" />
+	
+	<LinearLayout
+	    android:orientation="vertical"
+	    android:layout_marginLeft="10dp"
+	    android:layout_gravity="center_vertical"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+	    
+		<TextView android:id="@+id/history_title"
+		    android:textSize="15sp"
+		    android:textStyle="bold"
+		    android:text="TITLE"
+		    android:singleLine="true"
+		    android:ellipsize="marquee"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" />
+		
+		<TextView android:id="@+id/history_date"
+		    android:textSize="10sp"
+		    android:text="DATE"
+		    android:singleLine="true"
+		    android:ellipsize="marquee"
+		    android:layout_marginTop="5dp"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" />
+		
+	</LinearLayout>
+</LinearLayout>

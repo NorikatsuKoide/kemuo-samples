@@ -14,7 +14,7 @@ public class CookieSampleWebView extends ActionBarActivity {
 	private static final String TAG = CookieSampleWebView.class.getSimpleName();
 
 	private static final String LOGIN_URL = "https://accounts.google.com/accounts/ServiceLogin?hl=ja&nui=1&service=hist";
-	private static final String LOGIN_FINISH_URL = "https://plus.google.com/settings/";
+	private static final String LOGIN_FINISH_URL = "https://www.google.com/settings/";
 	
 	private WebView _webView = null;
 	
