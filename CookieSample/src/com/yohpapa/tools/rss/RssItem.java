@@ -6,15 +6,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class RssItem implements Comparable<RssItem>, Cloneable {
-	private final SimpleDateFormat _FORMATTER = new SimpleDateFormat("E, dd MMM yyyy hh:mm:ss zzz", Locale.US);
+	private SimpleDateFormat _FORMATTER;
 
 	private String _title = null;
 	private URL _link = null;
 	private Date _pubDate = null;
 	private String _category = null;
 	private String _description = null;
+	
+	public RssItem() {
+		SimpleDateFormat formatter = new SimpleDateFormat("E, dd MMM yyyy hh:mm:ss zzz", Locale.US);
+		formatter.setTimeZone(TimeZone.getDefault());
+		_FORMATTER = formatter;
+	}
 	
 	public String getTitle() {return _title;}
 	public URL getLink() {return _link;}

@@ -7,10 +7,34 @@
 		android:orderInCategory="1"
 		android:showAsAction="always" />
 	
-	<item android:id="@+id/menu_rss"
-		android:title="@string/menu_rss"
+	<item android:id="@+id/menu_rss_recent"
+		android:title="@string/menu_rss_recent"
 		android:icon="@drawable/ic_rss"
-		android:orderInCategory="1"
-		android:showAsAction="always" />
+		android:orderInCategory="2"
+		android:showAsAction="collapseActionView" />
+	
+	<item android:id="@+id/menu_rss_yesterday"
+		android:title="@string/menu_rss_yesterday"
+		android:icon="@drawable/ic_rss"
+		android:orderInCategory="2"
+		android:showAsAction="collapseActionView" />
 
+	<item android:id="@+id/menu_rss_last_week"
+		android:title="@string/menu_rss_last_week"
+		android:icon="@drawable/ic_rss"
+		android:orderInCategory="2"
+		android:showAsAction="collapseActionView" />
+	
+	<item android:id="@+id/menu_rss_last_month"
+		android:title="@string/menu_rss_last_month"
+		android:icon="@drawable/ic_rss"
+		android:orderInCategory="2"
+		android:showAsAction="collapseActionView" />
+	
+	<item android:id="@+id/menu_rss_more_past"
+		android:title="@string/menu_rss_more_past"
+		android:icon="@drawable/ic_rss"
+		android:orderInCategory="2"
+		android:showAsAction="collapseActionView" />
+	
 </menu>
