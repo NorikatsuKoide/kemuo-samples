@@ -25,6 +25,12 @@ public class CookieSampleActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		String cookie = ((CookieSampleApp)getApplication()).restoreCookie();
+		if(cookie == null)
+			return;
+		
+		updateCookieList(cookie);
 	}
 
 	@Override
@@ -34,13 +40,17 @@ public class CookieSampleActivity extends ActionBarActivity {
 			return;
 		}
 		
-		String cookieBuf = ((CookieSampleApp)getApplication()).restoreCookie();
-		if(cookieBuf == null) {
+		String cookie = ((CookieSampleApp)getApplication()).restoreCookie();
+		if(cookie == null) {
 			Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
-		String[] cookies = cookieBuf.split(";");
+		updateCookieList(cookie);
+	}
+	
+	private void updateCookieList(String cookie) {
+		String[] cookies = cookie.split(";");
 		
 		SimpleAdapter adapter = new SimpleAdapter(
 											this,

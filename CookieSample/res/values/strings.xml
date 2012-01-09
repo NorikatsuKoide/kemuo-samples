@@ -5,5 +5,7 @@
 	<string name="error_message">Please login!</string>
 	<string name="menu_login">LOGIN</string>
 	<string name="menu_rss">RSS</string>
+	<string name="history_type_description">Web history type</string>
 
+	<string name="pref_cookie">pref_cookie</string>
 </resources>
