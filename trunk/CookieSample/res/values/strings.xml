@@ -10,6 +10,7 @@
 	<string name="menu_rss_last_month">Last month Web History</string>
 	<string name="menu_rss_more_past">More past web History</string>
 	<string name="history_type_description">Web history type</string>
+	<string name="rss_failed_message">Failed obtaining the Rss feeds.\nPlease login again.</string>
 
 	<string name="pref_cookie">pref_cookie</string>
 </resources>
