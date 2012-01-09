@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WebHistoryAdapter extends ArrayAdapter<RssItem> {
+	public static final int TAG_URL = R.string.tag_url;
+	
 	private static final String CATEGORY_WEB_QUERY = "web query";
 	
 	public WebHistoryAdapter(Context context, List<RssItem> items) {
@@ -61,6 +63,9 @@ public class WebHistoryAdapter extends ArrayAdapter<RssItem> {
 			return view;
 		date.setText(item.getPubDate().toLocaleString());
 
+		// タグにURLを設定する
+		view.setTag(TAG_URL, item.getLink());
+		
 		return view;
 	}
 }
