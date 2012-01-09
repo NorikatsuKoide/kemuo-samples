@@ -1,17 +1,22 @@
 package com.yohpapa.research.cookiesample;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.yohpapa.tools.ActivityUtils;
 import com.yohpapa.tools.rss.RssItem;
 import com.yohpapa.tools.rss.WebHistoryParser;
 import com.yohpapa.tools.ui.ActionBarActivity;
@@ -188,9 +193,11 @@ public class CookieSampleRssView extends ActionBarActivity {
 
 		@Override
 		protected void onPostExecute(List<RssItem> result) {
+			final Activity thiz = CookieSampleRssView.this;
+			
 			if(result == null || result.size() <= 0) {
 				Toast.makeText(
-						CookieSampleRssView.this,
+						thiz,
 						R.string.rss_failed_message,
 						Toast.LENGTH_SHORT).show();
 				return;
@@ -198,8 +205,18 @@ public class CookieSampleRssView extends ActionBarActivity {
 			
 			// 取得したRSSリストをリスト表示する
 			ListView list = (ListView)findViewById(R.id.web_history_list);
-			WebHistoryAdapter adapter = new WebHistoryAdapter(CookieSampleRssView.this, result);
+			WebHistoryAdapter adapter = new WebHistoryAdapter(thiz, result);
 			list.setAdapter(adapter);
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					URL url = (URL)view.getTag(WebHistoryAdapter.TAG_URL);
+					if(url == null)
+						return;
+					
+					ActivityUtils.startActivity(thiz, url, Intent.ACTION_VIEW);
+				}
+			});
 		}
 	}
 }
