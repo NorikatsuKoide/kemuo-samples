@@ -45,12 +45,6 @@ public class CookieSampleWebView extends ActionBarActivity {
 				return;
 			}
 			
-			Log.v(TAG, "cookies: " + cookies);
-			
-			// TODO:
-			// Cookie情報をContentProviderに保存しておく
-			// その時、暗号化やセキュリティ設定を完璧にしておくこと
-			
 			((CookieSampleApp)getApplication()).storeCookie(cookies);
 			
 			// Cookieを取得したら元の画面に戻る

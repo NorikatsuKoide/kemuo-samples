@@ -7,7 +7,7 @@
 	
 	<ImageView android:id="@+id/history_type_icon"
 		android:src="@drawable/ic_query"
-		android:contentDescription="hogehoge"
+		android:contentDescription="@string/history_type_description"
 		android:layout_gravity="center_vertical"
 		android:layout_width="@dimen/icon_size"
 		android:layout_height="@dimen/icon_size" />
@@ -22,7 +22,6 @@
 		<TextView android:id="@+id/history_title"
 		    android:textSize="15sp"
 		    android:textStyle="bold"
-		    android:text="TITLE"
 		    android:singleLine="true"
 		    android:ellipsize="marquee"
 		    android:layout_width="match_parent"
@@ -30,7 +29,6 @@
 		
 		<TextView android:id="@+id/history_date"
 		    android:textSize="10sp"
-		    android:text="DATE"
 		    android:singleLine="true"
 		    android:ellipsize="marquee"
 		    android:layout_marginTop="5dp"
