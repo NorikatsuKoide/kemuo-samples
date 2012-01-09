@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.yohpapa.tools.rss.RssItem;
 import com.yohpapa.tools.rss.WebHistoryParser;
@@ -28,6 +29,7 @@ public class CookieSampleRssView extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.rss_view);
 		
+		// 起動Intentから起動オプションを取得する
 		Intent intent = getIntent();
 		if(intent == null) {
 			finish();
@@ -40,10 +42,40 @@ public class CookieSampleRssView extends ActionBarActivity {
 			return;
 		}
 		
+		// 画面のタイトルを起動オプションから初期化する
+		setTitleByOption(param);
+		
 		// Cookie文字列を使ってWeb履歴RSSを取得する
 		String cookie = ((CookieSampleApp)getApplication()).restoreCookie();
 		WebHistoryTask task = new WebHistoryTask(param);
 		task.execute(cookie);
+	}
+	
+	private void setTitleByOption(int param) {
+		switch(param) {
+		case RECENT:
+			setTitle(R.string.menu_rss_recent);
+			break;
+			
+		case YESTERDAY:
+			setTitle(R.string.menu_rss_yesterday);
+			break;
+			
+		case LAST_WEEK:
+			setTitle(R.string.menu_rss_last_week);
+			break;
+			
+		case LAST_MONTH:
+			setTitle(R.string.menu_rss_last_month);
+			break;
+			
+		case MORE_PAST:
+			setTitle(R.string.menu_rss_more_past);
+			break;
+			
+		default:
+			break;
+		}
 	}
 	
 	private class WebHistoryTask extends AsyncTask<String, Void, List<RssItem>> {
@@ -51,6 +83,7 @@ public class CookieSampleRssView extends ActionBarActivity {
 		private final long _minTime;
 		
 		public WebHistoryTask(int param) {
+			// パラメータによってWeb履歴の取得範囲を調整する
 			switch(param) {
 			case RECENT:
 				_maxTime = System.currentTimeMillis() * 1000L;
@@ -73,6 +106,7 @@ public class CookieSampleRssView extends ActionBarActivity {
 				break;
 				
 			case MORE_PAST:
+				// ただし一ヶ月以上前の履歴は固定数しか取得しない
 				_maxTime = getEpocTimeMonthOffset(-1, true) - 1;
 				_minTime = 0;
 				break;
@@ -125,7 +159,12 @@ public class CookieSampleRssView extends ActionBarActivity {
 				
 				List<RssItem> buffer = parser.parse();
 				if(buffer == null || buffer.size() <= 0)
-					return null;
+					return result;
+				
+				if(_minTime == 0) {
+					result.addAll(buffer);
+					return result;
+				}
 				
 				Date limit = new Date(_minTime / 1000);
 				for(int i = 0; i < buffer.size(); i ++) {
@@ -149,8 +188,13 @@ public class CookieSampleRssView extends ActionBarActivity {
 
 		@Override
 		protected void onPostExecute(List<RssItem> result) {
-			if(result == null)
+			if(result == null || result.size() <= 0) {
+				Toast.makeText(
+						CookieSampleRssView.this,
+						R.string.rss_failed_message,
+						Toast.LENGTH_SHORT).show();
 				return;
+			}
 			
 			// 取得したRSSリストをリスト表示する
 			ListView list = (ListView)findViewById(R.id.web_history_list);
