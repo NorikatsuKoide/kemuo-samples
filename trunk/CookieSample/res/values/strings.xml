@@ -4,7 +4,11 @@
 	<string name="app_name">Cookie Viewer</string>
 	<string name="error_message">Please login!</string>
 	<string name="menu_login">LOGIN</string>
-	<string name="menu_rss">RSS</string>
+	<string name="menu_rss_recent">Recent Web History</string>
+	<string name="menu_rss_yesterday">Yesterday Web History</string>
+	<string name="menu_rss_last_week">Last week Web History</string>
+	<string name="menu_rss_last_month">Last month Web History</string>
+	<string name="menu_rss_more_past">More past web History</string>
 	<string name="history_type_description">Web history type</string>
 
 	<string name="pref_cookie">pref_cookie</string>

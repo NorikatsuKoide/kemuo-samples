@@ -99,15 +99,24 @@ public class CookieSampleActivity extends ActionBarActivity {
 			startActivityForResult(intent, 0);
 			break;
 			
-		case R.id.menu_rss:
-			final String cookie = ((CookieSampleApp)getApplication()).restoreCookie();
-			if(cookie == null) {
-				Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
-				return result;
-			}
+		case R.id.menu_rss_recent:
+			onMenuRssSelected(CookieSampleRssView.RECENT);
+			break;
 			
-			intent = new Intent(this, CookieSampleRssView.class);
-			startActivity(intent);
+		case R.id.menu_rss_yesterday:
+			onMenuRssSelected(CookieSampleRssView.YESTERDAY);
+			break;
+			
+		case R.id.menu_rss_last_week:
+			onMenuRssSelected(CookieSampleRssView.LAST_WEEK);
+			break;
+			
+		case R.id.menu_rss_last_month:
+			onMenuRssSelected(CookieSampleRssView.LAST_MONTH);
+			break;
+			
+		case R.id.menu_rss_more_past:
+			onMenuRssSelected(CookieSampleRssView.MORE_PAST);
 			break;
 			
 		default:
@@ -116,5 +125,18 @@ public class CookieSampleActivity extends ActionBarActivity {
 		}
 		
 		return result;
+	}
+	
+	private void onMenuRssSelected(int param) {
+		final String cookie = ((CookieSampleApp)getApplication()).restoreCookie();
+		if(cookie == null) {
+			Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		Intent intent = new Intent(this, CookieSampleRssView.class);
+		intent.putExtra(CookieSampleRssView.START_PARAMETER, param);
+		startActivity(intent);
+
 	}
 }

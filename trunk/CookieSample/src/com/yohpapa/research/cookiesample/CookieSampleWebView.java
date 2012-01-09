@@ -39,7 +39,7 @@ public class CookieSampleWebView extends ActionBarActivity {
 				return;
 			}
 			
-			String cookies = CookieManager.getInstance().getCookie(LOGIN_URL);
+			String cookies = CookieManager.getInstance().getCookie(url);
 			if(cookies == null) {
 				Log.e(TAG, "Error: cookies is null.");
 				return;
